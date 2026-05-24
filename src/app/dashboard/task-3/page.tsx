@@ -17,6 +17,13 @@ export default function Task3ProblemStatement() {
         <TaskSubNav taskNumber={3} />
 
         <div className="prose prose-invert max-w-none">
+          <div className="bg-black/20 p-6 rounded-xl border border-[var(--color-star-task3)]/20 mb-8 mt-6">
+            <p className="text-foreground/90 leading-relaxed font-serif text-lg italic m-0">
+              "This task focuses on your project development and problem-solving skills. You will work through one of STAC’s previous research projects while also demonstrating your AI/ML understanding and engineering approach.
+
+The assessment is based around lunar surface analysis using Digital Elevation Models (DEMs) and includes working with LinaDEM, STAC’s official Python library for terrain analysis and scientific computing. The goal is to evaluate how effectively you can understand existing systems, build upon them, and apply AI/ML techniques to real research workflows."
+            </p>
+          </div>
           <h3 className="text-xl font-bold font-syne mt-8 mb-4">Background</h3>
           <p className="text-muted-foreground leading-relaxed">
             The club heavily relies on advanced simulations to train its models. For this task, we are utilizing the proprietary <code>lunadem</code> Python library. This library interfaces with a real, live lunar dataset consisting of geological and sensor data.

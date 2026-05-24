@@ -7,6 +7,8 @@ export default function Task1ProblemStatement() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="bg-[var(--color-star-surface)] border border-[var(--color-star-border)] rounded-2xl p-6 md:p-10 shadow-xl">
+
+
         <h1 className="text-3xl font-bold font-syne mb-2 text-[var(--color-star-task1)]">
           Task 1: Club's Software Management
         </h1>
@@ -17,6 +19,11 @@ export default function Task1ProblemStatement() {
         <TaskSubNav taskNumber={1} />
 
         <div className="prose prose-invert max-w-none">
+          <div className="bg-black/20 p-6 rounded-xl border border-[var(--color-star-task1)]/20 mb-8 mt-6">
+            <p className="text-foreground/90 leading-relaxed font-serif text-lg italic m-0">
+              "Every club needs infrastructure. STAC runs events, workshops, seminars, and outreach programs throughout the year — and all of it needs a digital face. As a software member, one of your core responsibilities is maintaining and extending the club's live website. This task puts you directly in that role: you are given the existing codebase and asked to build a real feature that we genuinely want on our site. This isn't a toy exercise — this is how onboarding into a software team actually works."
+            </p>
+          </div>
           <h3 className="text-xl font-bold font-syne mt-8 mb-4">Background</h3>
           <p className="text-muted-foreground leading-relaxed">
             STAC frequently issues hardware components (like Arduino, Raspberry Pi, telescopes, and sensors) to its members. Currently, this process is managed manually via spreadsheets, which leads to inefficiencies, lost equipment, and lack of accountability. 

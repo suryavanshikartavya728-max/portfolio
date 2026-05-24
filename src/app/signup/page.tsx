@@ -56,8 +56,8 @@ export default function SignupPage() {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success("Profile initialized successfully!");
-        router.push("/dashboard");
+        toast.success("Please confirm the email sent on your student id");
+        // router.push("/dashboard"); // Removed redirect as user needs to confirm email first
       }
     } catch (err: any) {
       toast.error(err.message || "An error occurred during signup.");

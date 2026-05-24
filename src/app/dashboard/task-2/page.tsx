@@ -18,9 +18,18 @@ export default function Task2ProblemStatement() {
         <TaskSubNav taskNumber={2} />
 
         <div className="prose prose-invert max-w-none">
+          <div className="bg-black/20 p-6 rounded-xl border border-[var(--color-star-task2)]/20 mb-8 mt-6">
+            <p className="text-foreground/90 leading-relaxed font-serif text-lg italic m-0">
+              "As a software team member of STAC, you will represent both STAC and Indian Institute of Technology Mandi at various national and international competitions such as NASA Space Apps Challenge, Inter IIT Tech Meet, the ISRO Space Hackathon, and many more.
+
+To evaluate whether you are capable of representing IIT Mandi in competitions like Inter IIT Tech Meet, we are providing you with one of the challenging problem statements inspired by previous years’ work. We understand that these are not single-person problem statements and are usually solved by teams over weeks of effort. Because of that, we are not expecting a complete solution.
+
+Instead, we want to evaluate your thinking ability, problem-solving approach, creativity, technical understanding, and how you break down and approach complex real-world problems."
+            </p>
+          </div>
           <h3 className="text-xl font-bold font-syne mt-8 mb-4">Background</h3>
           <p className="text-muted-foreground leading-relaxed">
-            At the Inter IIT Tech Meet 13.0, the Space Technology and Astronomy Cell (STAC) secured an AIR 5 standing by tackling complex aerospace and astronomy problem statements. One such challenge involved processing data from the CLASS (Chandrayaan-2 Large Area Soft X-ray Spectrometer) payload on the Chandrayaan-2 mission.
+            At the Inter IIT Tech Meet 13.0, the Space Technology and Astronomy Cell (STAC) secured an 5 place among all the IITs. Such challenge involved processing data from the CLASS (Chandrayaan-2 Large Area Soft X-ray Spectrometer) payload on the Chandrayaan-2 mission.
           </p>
           <p className="text-muted-foreground leading-relaxed mt-4">
             For this task, you are required to build an interactive dashboard to visualize and analyze lunar X-ray fluorescence datasets.
