@@ -46,7 +46,7 @@ export default function SettingsPage() {
     }
     
     if (!validateRollNumber(rollNumber)) {
-      toast.error("Invalid Roll Number. Must be B24XXX or B25XXX (001-600).");
+      toast.error("Invalid Roll Number. Must start with B, D, M, T, or S followed by 24XXX or 25XXX (001-600).");
       return;
     }
 

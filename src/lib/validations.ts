@@ -1,4 +1,4 @@
-export const rollNumberRegex = /^[Bb](24|25)([0-5]\d{2}|600)$/i;
+export const rollNumberRegex = /^[BDMTS](24|25)([0-5]\d{2}|600)$/i;
 
 export const validateRollNumber = (roll: string) => {
   return rollNumberRegex.test(roll);
