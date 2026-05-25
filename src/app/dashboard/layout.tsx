@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { LogOut, Home, BarChart2, BookOpen, Menu, X, Rocket, Settings } from "lucide-react";
+import { LogOut, Home, BarChart2, BookOpen, Menu, X, Rocket, Settings, ShieldAlert } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
@@ -17,9 +17,22 @@ const navItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+
+  React.useEffect(() => {
+    async function checkRole() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+      if (data?.role === 'admin') {
+        setIsAdmin(true);
+      }
+    }
+    checkRole();
+  }, [supabase]);
 
   const handleLogout = async () => {
     try {
@@ -84,6 +97,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             );
           })}
+
+          {isAdmin && (
+            <div className="pt-4 mt-4 border-t border-[var(--color-star-border)]">
+              <Link
+                href="/admin"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all font-medium text-red-500 hover:bg-red-500/10 hover:text-red-400 border border-red-500/20"
+              >
+                <ShieldAlert size={18} />
+                Admin Center
+              </Link>
+            </div>
+          )}
         </nav>
 
         <div className="p-4 border-t border-[var(--color-star-border)]">

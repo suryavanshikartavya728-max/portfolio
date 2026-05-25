@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ShieldAlert, LayoutDashboard, Bell, PenTool, LogOut, Loader2 } from "lucide-react";
+import { ShieldAlert, LayoutDashboard, Bell, PenTool, LogOut, Loader2, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 const adminNavItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
+  { href: "/admin/users", label: "User Submissions", icon: Users },
   { href: "/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/admin/overrides", label: "Overrides", icon: PenTool },
   { href: "/admin/settings", label: "System Settings", icon: ShieldAlert },
