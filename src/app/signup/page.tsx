@@ -92,7 +92,7 @@ export default function SignupPage() {
               Initialize Applicant Profile
             </p>
             <p className="text-xs text-muted-foreground/60 font-mono">
-              (Software Team Assessment & Recruitment)
+              (STAC Technical Assessment & Recruitment Test)
             </p>
           </div>
 

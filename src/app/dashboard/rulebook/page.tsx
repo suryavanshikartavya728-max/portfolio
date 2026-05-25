@@ -11,7 +11,7 @@ export default function RulebookPage() {
           </div>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold font-syne mb-2">STAR Rulebook</h1>
-            <p className="text-muted-foreground font-mono">Official Guidelines & Evaluation Policy</p>
+            <p className="text-muted-foreground font-mono">Official Guidelines & Evaluation Policy for the STAC Technical Assessment & Recruitment Test</p>
           </div>
         </div>
 

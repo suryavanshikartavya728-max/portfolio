@@ -55,7 +55,7 @@ export default function LoginPage() {
         <div className="bg-[var(--color-star-surface)] border border-[var(--color-star-border)] rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              STAR Portal
+              STAR (STAC Technical Assessment & Recruitment Test) Portal
             </h1>
             <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest">
               Login to continue
@@ -109,7 +109,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            New to STAR?{" "}
+            New to STAR (STAC Technical Assessment & Recruitment Test)?{" "}
             <Link
               href="/signup"
               className="text-[var(--color-star-accent)] hover:underline font-medium"
