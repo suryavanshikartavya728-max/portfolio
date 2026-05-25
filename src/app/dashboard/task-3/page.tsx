@@ -53,7 +53,7 @@ The assessment is based around lunar surface analysis using Digital Elevation Mo
 
           <h3 className="text-xl font-bold font-syne mt-8 mb-4">Deliverables</h3>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-            <li>A Jupyter Notebook (or equivalent) hosted on a private GitHub repository.</li>
+            <li>A Jupyter Notebook (or equivalent) hosted on a private GitHub repository. You must add the GitHub accounts <code>Kartavya728</code> and <code>STAC-IITMandi</code> as collaborators to your repository.</li>
             <li>A detailed README explaining your ML pipeline, feature engineering, and model choices.</li>
             <li>Submission of your finalized metrics on the Submission tab.</li>
           </ul>

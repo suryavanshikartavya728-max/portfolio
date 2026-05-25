@@ -90,7 +90,7 @@ export default function Task1Submission() {
 
         <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-8">
           <p className="text-red-400 text-sm font-medium">
-            <strong>CRITICAL:</strong> Keep your GitHub repository PRIVATE. Add the GitHub user <code>Kartavya28</code> as a collaborator to allow us to review your code. Public repositories will lead to immediate disqualification.
+            <strong>CRITICAL:</strong> Keep your GitHub repository PRIVATE. Add the GitHub users <code>Kartavya728</code> and <code>STAC-IITMandi</code> as collaborators to allow us to review your code. Public repositories will lead to immediate disqualification.
           </p>
         </div>
 
