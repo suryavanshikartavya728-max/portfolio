@@ -27,10 +27,22 @@ export default function Task3Leaderboard() {
       }
 
       if (data) {
-        const sorted = data.sort((a: any, b: any) => {
-          const scoreA = a.leaderboard[0]?.overall_score || 0;
-          const scoreB = b.leaderboard[0]?.overall_score || 0;
-          return scoreB - scoreA;
+        const calculatedData = data.map((entry: any) => {
+          const subs = entry.submissions[0] || {};
+          const accuracy = subs.accuracy || 0;
+          const f1_score = subs.f1_score || 0;
+          const roc_auc = subs.roc_auc || 0;
+          
+          const totalScore = (40 * accuracy) + (30 * f1_score) + (30 * roc_auc);
+          
+          return {
+            ...entry,
+            calculatedScore: totalScore
+          };
+        });
+
+        const sorted = calculatedData.sort((a: any, b: any) => {
+          return b.calculatedScore - a.calculatedScore;
         });
         setLeaderboard(sorted);
       }
@@ -115,7 +127,7 @@ export default function Task3Leaderboard() {
                         {subs?.roc_auc?.toFixed(4) || "0.0000"}
                       </td>
                       <td className="py-4 pr-4 text-right font-mono font-bold text-[var(--color-star-task3)]">
-                        {lb.overall_score?.toFixed(4) || "0.0000"}
+                        {profile.calculatedScore?.toFixed(4) || "0.0000"}
                       </td>
                     </tr>
                   );

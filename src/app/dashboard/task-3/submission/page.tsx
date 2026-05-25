@@ -48,8 +48,8 @@ export default function Task3Submission() {
       const parsedRocAuc = parseFloat(rocAuc) || 0;
       const parsedCustomValue = parseFloat(customMetricValue) || 0;
 
-      // Calculate an overall score simply as the sum of main metrics (for the leaderboard)
-      const overallScore = parsedAccuracy + parsedF1 + parsedPrecision + parsedRecall + parsedRocAuc;
+      // Calculate overall score: 40*accuracy + 30*ROC + 10*recall + 10*F1 + 10*precision
+      const overallScore = (40 * parsedAccuracy) + (30 * parsedRocAuc) + (10 * parsedRecall) + (10 * parsedF1) + (10 * parsedPrecision);
 
       const { error: subError } = await supabase
         .from("submissions")

@@ -67,10 +67,11 @@ export default function ComparePage() {
         Recruitment <span className="text-[var(--color-star-accent)]">Analytics</span>
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <StatCard title="Total Applicants" value={stats.totalUsers} icon={Users} colorClass="text-[var(--color-star-accent)]" />
-        <StatCard title="Total Submissions" value={stats.totalSubmissions} icon={FileCode} colorClass="text-[var(--color-star-task2)]" />
+        <StatCard title="Total Submissions" value={stats.totalSubmissions} icon={FileCode} colorClass="text-muted-foreground" />
         <StatCard title="Task 1 Completed" value={stats.task1Count} icon={CheckCircle} colorClass="text-[var(--color-star-task1)]" />
+        <StatCard title="Task 2 Completed" value={stats.task2Count} icon={CheckCircle} colorClass="text-[var(--color-star-task2)]" />
         <StatCard title="Task 3 Completed" value={stats.task3Count} icon={Activity} colorClass="text-[var(--color-star-task3)]" />
       </div>
 

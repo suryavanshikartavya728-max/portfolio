@@ -49,7 +49,8 @@ export default function SignupPage() {
           data: {
             full_name: fullName,
             roll_number: rollNumber.toUpperCase(),
-          }
+          },
+          emailRedirectTo: "https://star-test-stac.vercel.app/login"
         }
       });
 
@@ -87,8 +88,11 @@ export default function SignupPage() {
             <h1 className="text-3xl font-bold text-foreground mb-2">
               Join STAR
             </h1>
-            <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest">
+            <p className="text-muted-foreground font-mono text-sm uppercase tracking-widest mb-1">
               Initialize Applicant Profile
+            </p>
+            <p className="text-xs text-muted-foreground/60 font-mono">
+              (Software Team Assessment & Recruitment)
             </p>
           </div>
 
