@@ -77,17 +77,25 @@ export default function ResultsPage() {
           });
 
           const sorted = processed.sort((a: any, b: any) => {
-            if (a.is_disqualified && !b.is_disqualified) return 1;
-            if (!a.is_disqualified && b.is_disqualified) return -1;
             return b.overall - a.overall;
           });
           
           setLeaderboard(sorted);
 
-          // Find own rank
-          const ownIndex = sorted.findIndex(p => p.id === user.id);
-          if (ownIndex !== -1 && !profileData.is_disqualified) {
-            setRank(ownIndex + 1);
+          // Find own rank skipping disqualified users
+          if (!profileData.is_disqualified) {
+            let ownRank = 0;
+            let currentRank = 1;
+            for (const p of sorted) {
+              if (!p.is_disqualified) {
+                if (p.id === user.id) {
+                  ownRank = currentRank;
+                  break;
+                }
+                currentRank++;
+              }
+            }
+            if (ownRank > 0) setRank(ownRank);
           }
         }
       }
@@ -325,11 +333,19 @@ export default function ResultsPage() {
               </tr>
             </thead>
             <tbody>
-              {leaderboard.map((row, index) => {
-                const highlightClass = getHighlightClass(row);
-                const isDisq = row.is_disqualified;
-                const rankDisplay = isDisq ? "DISQ" : `#${index + 1}`;
-                const isMe = row.id === profile?.id;
+              {(() => {
+                let currentRank = 1;
+                return leaderboard.map((row, index) => {
+                  const highlightClass = getHighlightClass(row);
+                  const isDisq = row.is_disqualified;
+                  
+                  let rankDisplay = "DISQ";
+                  if (!isDisq) {
+                    rankDisplay = `#${currentRank}`;
+                    currentRank++;
+                  }
+
+                  const isMe = row.id === profile?.id;
 
                 return (
                   <tr
@@ -338,24 +354,25 @@ export default function ResultsPage() {
                   >
                     <td className="p-3 font-mono font-bold">{rankDisplay} {isMe && <span className="text-[9px] ml-2 bg-[var(--color-star-accent)]/20 text-[var(--color-star-accent)] px-1 rounded uppercase">You</span>}</td>
                     <td className="p-3">
-                      <div className="font-bold font-syne">{row.full_name}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="font-bold font-syne">{row.full_name}</div>
+                        {isDisq && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-red-500/20 text-red-500 border border-red-500/30 uppercase tracking-widest font-mono">
+                            Disqualified
+                          </span>
+                        )}
+                      </div>
                       <div className="text-[10px] font-mono opacity-80">{row.roll_number}</div>
                     </td>
-                    <td className="p-3 text-center font-mono">{isDisq ? "N/A" : row.t1.toFixed(2)}</td>
-                    <td className="p-3 text-center font-mono">{isDisq ? "N/A" : row.t2.toFixed(2)}</td>
-                    <td className="p-3 text-center font-mono">{isDisq ? "N/A" : row.t3.toFixed(2)}</td>
+                    <td className="p-3 text-center font-mono">{row.t1.toFixed(2)}</td>
+                    <td className="p-3 text-center font-mono">{row.t2.toFixed(2)}</td>
+                    <td className="p-3 text-center font-mono">{row.t3.toFixed(2)}</td>
                     <td className="p-3 text-right font-mono font-bold">
-                      {isDisq ? (
-                        <span className="text-[9px] font-mono font-bold bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded uppercase">
-                          Disqualified
-                        </span>
-                      ) : (
-                        row.overall.toFixed(2)
-                      )}
+                      {row.overall.toFixed(2)}
                     </td>
                   </tr>
                 );
-              })}
+              })})()}
             </tbody>
           </table>
         </div>

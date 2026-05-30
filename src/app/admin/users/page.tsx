@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Users, Search, Loader2, Undo2, Check, RefreshCw, ChevronDown, ChevronUp, Code, Globe, FileText, Activity, AlertTriangle, ShieldAlert, Award, X, Save } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { toggleUserDisqualification } from "../actions";
 
 export default function UserSubmissionsPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -187,20 +188,15 @@ export default function UserSubmissionsPage() {
     }
 
     const confirmMsg = user.is_disqualified
-      ? `Are you sure you want to RE-QUALIFY ${user.full_name}?`
+      ? `Are you sure you want to Undo Disqualification for ${user.full_name}?`
       : `Are you sure you want to DISQUALIFY ${user.full_name}? They will be completely blocked from making submissions, and marked on all leaderboards.`;
 
     if (!confirm(confirmMsg)) return;
 
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ is_disqualified: !user.is_disqualified })
-        .eq("id", user.id);
+      await toggleUserDisqualification(user.id, user.is_disqualified);
 
-      if (error) throw error;
-
-      toast.success(user.is_disqualified ? "Applicant re-qualified successfully!" : "Applicant DISQUALIFIED successfully!");
+      toast.success(user.is_disqualified ? "Applicant disqualification undone successfully!" : "Applicant DISQUALIFIED successfully!");
       loadData();
     } catch (err: any) {
       toast.error(err.message || "Failed to update disqualification status");
@@ -368,7 +364,7 @@ export default function UserSubmissionsPage() {
                                     : "bg-red-500/15 border-red-500/30 text-red-400 hover:bg-red-500/25"
                                 }`}
                               >
-                                {user.is_disqualified ? "RE-QUALIFY" : "DISQUALIFY"}
+                                {user.is_disqualified ? "UNDO DISQUALIFICATION" : "DISQUALIFY"}
                               </button>
                             ) : (
                               <span className="text-xs font-mono text-muted-foreground">

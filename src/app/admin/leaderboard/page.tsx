@@ -97,10 +97,8 @@ export default function AdminLeaderboardPage() {
         };
       });
 
-      // Sort by overall score descending (putting disqualified at the bottom)
+      // Sort by overall score descending
       const sorted = processed.sort((a: any, b: any) => {
-        if (a.is_disqualified && !b.is_disqualified) return 1;
-        if (!a.is_disqualified && b.is_disqualified) return -1;
         return b.overall - a.overall;
       });
 
@@ -300,47 +298,55 @@ export default function AdminLeaderboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {leaderboard.map((row, index) => {
-                  const highlightClass = getHighlightClass(row);
-                  const isGold = highlightClass.includes("yellow-500");
-                  const isGreen = highlightClass.includes("green-500");
-                  const isDisq = row.is_disqualified;
+                {(() => {
+                  let currentRank = 1;
+                  return leaderboard.map((row, index) => {
+                    const highlightClass = getHighlightClass(row);
+                    const isGold = highlightClass.includes("yellow-500");
+                    const isGreen = highlightClass.includes("green-500");
+                    const isDisq = row.is_disqualified;
 
-                  // Ranks ignore disqualified users
-                  const rankDisplay = isDisq ? "DISQ" : `#${index + 1}`;
+                    let rankDisplay = "DISQ";
+                    let rankValue = 0;
+                    if (!isDisq) {
+                      rankValue = currentRank;
+                      rankDisplay = `#${rankValue}`;
+                      currentRank++;
+                    }
 
-                  return (
-                    <tr
-                      key={row.roll_number}
-                      className={`border-b border-red-500/10 hover:bg-white/5 transition-all duration-300 ${highlightClass}`}
-                    >
+                    return (
+                      <tr
+                        key={row.roll_number}
+                        className={`border-b border-red-500/10 hover:bg-white/5 transition-all duration-300 ${highlightClass}`}
+                      >
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            {!isDisq && rankValue === 1 && <Trophy size={18} className="text-yellow-400" />}
+                            {!isDisq && rankValue === 2 && <Medal size={18} className="text-gray-300" />}
+                            {!isDisq && rankValue === 3 && <Award size={18} className="text-amber-600" />}
+                            <span className="font-mono font-bold">{rankDisplay}</span>
+                          </div>
+                        </td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
-                          {!isDisq && index === 0 && <Trophy size={18} className="text-yellow-400" />}
-                          {!isDisq && index === 1 && <Medal size={18} className="text-gray-300" />}
-                          {!isDisq && index === 2 && <Award size={18} className="text-amber-600" />}
-                          <span className="font-mono font-bold">{rankDisplay}</span>
+                          <div className="font-bold font-syne">{row.full_name}</div>
+                          {isDisq && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-red-500/20 text-red-500 border border-red-500/30 uppercase tracking-widest font-mono">
+                              Disqualified
+                            </span>
+                          )}
                         </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="font-bold font-syne">{row.full_name}</div>
                         <div className="text-xs font-mono">{row.roll_number}</div>
                       </td>
-                      <td className="p-4 text-center font-mono">{isDisq ? "N/A" : row.t1.toFixed(2)}</td>
-                      <td className="p-4 text-center font-mono">{isDisq ? "N/A" : row.t2.toFixed(2)}</td>
-                      <td className="p-4 text-center font-mono">{isDisq ? "N/A" : row.t3.toFixed(2)}</td>
+                      <td className="p-4 text-center font-mono">{row.t1.toFixed(2)}</td>
+                      <td className="p-4 text-center font-mono">{row.t2.toFixed(2)}</td>
+                      <td className="p-4 text-center font-mono">{row.t3.toFixed(2)}</td>
                       <td className="p-4 text-right font-mono font-bold text-lg">
-                        {isDisq ? (
-                          <span className="text-xs font-mono font-bold bg-red-500/15 border border-red-500/30 text-red-500 px-2 py-0.5 rounded uppercase tracking-wider">
-                            Disqualified
-                          </span>
-                        ) : (
-                          row.overall.toFixed(2)
-                        )}
+                        {row.overall.toFixed(2)}
                       </td>
                     </tr>
                   );
-                })}
+                })})()}
               </tbody>
             </table>
           </div>

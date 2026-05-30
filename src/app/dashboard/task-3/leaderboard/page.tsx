@@ -43,8 +43,6 @@ export default function Task3Leaderboard() {
         });
 
         const sorted = calculatedData.sort((a: any, b: any) => {
-          if (a.is_disqualified && !b.is_disqualified) return 1;
-          if (!a.is_disqualified && b.is_disqualified) return -1;
           return b.calculatedScore - a.calculatedScore;
         });
         setLeaderboard(sorted);
@@ -98,50 +96,60 @@ export default function Task3Leaderboard() {
                 </tr>
               </thead>
               <tbody>
-                {leaderboard.map((entry, index) => {
+                {(() => {
+                  let currentRank = 1;
+                  return leaderboard.map((entry, index) => {
                   const lb = entry.leaderboard[0] || {};
                   const isDisq = !!entry.is_disqualified;
-                  const rank = lb.is_overridden ? lb.rank : index + 1;
                   const profile = entry;
                   const subs = entry.submissions[0] || {};
+                  
+                  let rankDisplay = "DISQ";
+                  let rankValue = 0;
+                  if (!isDisq) {
+                    rankValue = lb.is_overridden ? lb.rank : currentRank;
+                    rankDisplay = `#${rankValue}`;
+                    if (!lb.is_overridden) currentRank++;
+                  }
 
                   return (
                     <tr key={profile.roll_number} className={`border-b border-[var(--color-star-border)]/50 hover:bg-[var(--color-star-surface2)] transition-colors group ${isDisq ? "bg-red-500/5 text-red-500/90" : ""}`}>
                       <td className="py-4 pl-4">
                         <div className="flex items-center gap-2">
-                          {!isDisq && rank === 1 && <Trophy size={18} className="text-yellow-400" />}
-                          {!isDisq && rank === 2 && <Medal size={18} className="text-gray-300" />}
-                          {!isDisq && rank === 3 && <Award size={18} className="text-amber-600" />}
-                          <span className={`font-mono font-bold ${isDisq ? "text-red-500" : rank <= 3 ? "text-lg" : "text-muted-foreground"}`}>
-                            {isDisq ? "DISQ" : `#${rank}`}
+                          {!isDisq && rankValue === 1 && <Trophy size={18} className="text-yellow-400" />}
+                          {!isDisq && rankValue === 2 && <Medal size={18} className="text-gray-300" />}
+                          {!isDisq && rankValue === 3 && <Award size={18} className="text-amber-600" />}
+                          <span className={`font-mono font-bold ${isDisq ? "text-red-500" : rankValue <= 3 ? "text-lg" : "text-muted-foreground"}`}>
+                            {rankDisplay}
                           </span>
                         </div>
                       </td>
                       <td className="py-4">
-                        <div className="font-bold text-foreground font-syne">{profile.full_name}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="font-bold text-foreground font-syne">{profile.full_name}</div>
+                          {isDisq && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-red-500/20 text-red-500 border border-red-500/30 uppercase tracking-widest font-mono">
+                              Disqualified
+                            </span>
+                          )}
+                        </div>
                         <div className="text-xs text-muted-foreground font-mono">{profile.roll_number}</div>
                       </td>
                       <td className="py-4 text-right font-mono text-sm">
-                        {isDisq ? "N/A" : subs?.accuracy?.toFixed(4) || "0.0000"}
+                        {subs?.accuracy?.toFixed(4) || "0.0000"}
                       </td>
                       <td className="py-4 text-right font-mono text-sm hidden sm:table-cell text-muted-foreground group-hover:text-foreground transition-colors">
-                        {isDisq ? "N/A" : subs?.f1_score?.toFixed(4) || "0.0000"}
+                        {subs?.f1_score?.toFixed(4) || "0.0000"}
                       </td>
                       <td className="py-4 text-right font-mono text-sm hidden md:table-cell text-muted-foreground group-hover:text-foreground transition-colors">
-                        {isDisq ? "N/A" : subs?.roc_auc?.toFixed(4) || "0.0000"}
+                        {subs?.roc_auc?.toFixed(4) || "0.0000"}
                       </td>
                       <td className="py-4 pr-4 text-right font-mono font-bold text-[var(--color-star-task3)]">
-                        {isDisq ? (
-                          <span className="text-xs font-mono font-bold bg-red-500/20 border border-red-500/30 text-red-500 px-2 py-0.5 rounded uppercase tracking-wider">
-                            Disqualified
-                          </span>
-                        ) : (
-                          profile.calculatedScore?.toFixed(4) || "0.0000"
-                        )}
+                        {profile.calculatedScore?.toFixed(4) || "0.0000"}
                       </td>
                     </tr>
                   );
-                })}
+                })})()}
               </tbody>
             </table>
           </div>
