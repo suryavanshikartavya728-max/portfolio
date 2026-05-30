@@ -25,7 +25,7 @@ export default function SignupPage() {
       return;
     }
     if (!validateRollNumber(rollNumber)) {
-      toast.error("Invalid Roll Number. Must start with B, D, M, T, or S followed by 24XXX or 25XXX (001-600).");
+      toast.error("Invalid Roll Number. Must start with B, D, M, T, or S followed by 22XXX to 25XXX (001-600).");
       return;
     }
     if (!validatePassword(password)) {
@@ -92,7 +92,7 @@ export default function SignupPage() {
               Initialize Applicant Profile
             </p>
             <p className="text-xs text-muted-foreground/60 font-mono">
-              (STAC Technical Assessment & Recruitment Test)
+              (STAC Technical Assessment & Recruitment)
             </p>
           </div>
 
@@ -138,7 +138,7 @@ export default function SignupPage() {
                 }`}
               />
               <p className="text-xs text-muted-foreground mt-1 font-mono">
-                Format: [B,D,M,T,S]24XXX or [B,D,M,T,S]25XXX (001-600)
+                Format: [B,D,M,T,S]22XXX to [B,D,M,T,S]25XXX (001-600)
               </p>
             </div>
 

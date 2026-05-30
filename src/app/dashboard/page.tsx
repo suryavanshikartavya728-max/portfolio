@@ -69,8 +69,11 @@ export default function DashboardPage() {
       {/* Header section with Countdown */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bg-[var(--color-star-surface)] border border-[var(--color-star-border)] p-6 md:p-8 rounded-2xl shadow-xl">
         <div>
-          <div className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-[var(--color-star-accent)]/10 border border-[var(--color-star-accent)]/20 text-[var(--color-star-accent)] text-xs font-mono tracking-widest uppercase shadow-sm">
-            STAR Test - STAC Technical Assessment & Recruitment Test
+          <div className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-[var(--color-star-accent)]/10 border border-[var(--color-star-accent)]/20 text-[var(--color-star-accent)] text-xs font-mono tracking-widest uppercase shadow-sm cursor-help group relative">
+            <span>STAR Test</span>
+            <div className="absolute top-full left-0 mt-2 whitespace-nowrap bg-[var(--color-star-surface2)] border border-[var(--color-star-border)] text-foreground text-xs px-3 py-2 rounded shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 normal-case tracking-normal">
+              STAC Technical Assessment & Recruitment
+            </div>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2 font-syne">
             Welcome, <span className="text-[var(--color-star-accent)]">{profile?.full_name || "Applicant"}</span>

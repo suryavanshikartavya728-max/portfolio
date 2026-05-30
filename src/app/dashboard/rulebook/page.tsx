@@ -11,7 +11,7 @@ export default function RulebookPage() {
           </div>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold font-syne mb-2">STAR Rulebook</h1>
-            <p className="text-muted-foreground font-mono">Official Guidelines & Evaluation Policy for the STAC Technical Assessment & Recruitment Test</p>
+            <p className="text-muted-foreground font-mono">Official Guidelines & Evaluation Policy for the STAR Test</p>
           </div>
         </div>
 
@@ -29,7 +29,7 @@ export default function RulebookPage() {
                 Your repositories must be set to <strong>PRIVATE</strong> from the moment of creation.
               </p>
               <p>
-                You must invite the GitHub accounts <code>Kartavya728</code> and <code>STAC-IITMandi</code> as collaborators to your private repository for evaluation purposes. If your repository is public, it will be flagged for plagiarism.
+                You must invite the GitHub accounts <a href="https://github.com/Kartavya728" target="_blank" rel="noopener noreferrer" className="text-[var(--color-star-accent)] hover:underline">Kartavya728</a> and <a href="https://github.com/STAC-IITMandi" target="_blank" rel="noopener noreferrer" className="text-[var(--color-star-accent)] hover:underline">STAC-IITMandi</a> as collaborators to your private repository for evaluation purposes. Please ensure you also follow these GitHub profiles. If your repository is public, it will be flagged for plagiarism.
               </p>
             </div>
           </section>

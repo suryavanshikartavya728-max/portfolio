@@ -23,7 +23,7 @@ const instrument = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: "STAR Portal",
-  description: "STAC Technical Assessment & Recruitment Test Portal",
+  description: "STAR Test Portal",
 };
 
 export default function RootLayout({

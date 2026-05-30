@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div>
             <h2 className="font-bold text-xl tracking-wider">STAR</h2>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono leading-tight mt-1">
-              STAC Technical Assessment & Recruitment Test
+              STAR Test
             </p>
           </div>
         </div>

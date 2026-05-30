@@ -47,7 +47,7 @@ export default function AdminOverviewPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold font-syne mb-2 text-foreground">System Overview</h1>
-          <p className="text-muted-foreground font-mono text-sm">Real-time STAC portal metrics</p>
+          <p className="text-muted-foreground font-mono text-sm">Real-time STAR portal metrics</p>
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export default function AdminOverviewPage() {
       <div className="mt-12 bg-black/40 border border-red-500/20 rounded-2xl p-8">
         <h3 className="text-xl font-bold font-syne mb-4 text-red-400">Admin Instructions</h3>
         <p className="text-muted-foreground mb-4">
-          Welcome to the STAC Admin Command Center. From here, you possess full override authority over the recruitment portal.
+          Welcome to the STAR Admin Command Center. From here, you possess full override authority over the recruitment portal.
         </p>
         <ul className="list-disc list-inside space-y-2 text-muted-foreground/80 font-mono text-sm">
           <li>Use <strong>Notifications</strong> to broadcast global alerts or task-specific hints. These appear directly on student dashboards.</li>
