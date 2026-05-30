@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import TaskSubNav from "@/components/star/TaskSubNav";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
 
@@ -20,6 +21,7 @@ export default function Task1Submission() {
   const [loadingDeadline, setLoadingDeadline] = useState(true);
 
   const supabase = createClient();
+  const router = useRouter();
 
   React.useEffect(() => {
     async function checkLock() {
@@ -69,6 +71,7 @@ export default function Task1Submission() {
       }, { onConflict: 'user_id,task_number' });
 
       toast.success("Task 1 submitted successfully!");
+      router.push("/dashboard");
     } catch (err: any) {
       toast.error(err.message || "Failed to submit task");
     } finally {

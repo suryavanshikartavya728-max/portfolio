@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { LogOut, Home, BarChart2, BookOpen, Menu, X, Rocket, Settings, ShieldAlert } from "lucide-react";
+import { LogOut, Home, BarChart2, BookOpen, Menu, X, Rocket, Settings, ShieldAlert, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
+  { href: "/dashboard/results", label: "Results", icon: Trophy },
   { href: "/dashboard/compare", label: "Compare", icon: BarChart2 },
   { href: "/dashboard/rulebook", label: "Rulebook", icon: BookOpen },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
@@ -17,7 +18,7 @@ const navItems = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -27,8 +28,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-      if (data?.role === 'admin') {
-        setIsAdmin(true);
+      if (data?.role === 'admin' || data?.role === 'evaluator') {
+        setUserRole(data.role);
       }
     }
     checkRole();
@@ -98,7 +99,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             );
           })}
 
-          {isAdmin && (
+          {userRole && (
             <div className="pt-4 mt-4 border-t border-[var(--color-star-border)]">
               <Link
                 href="/admin"

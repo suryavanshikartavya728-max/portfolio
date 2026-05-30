@@ -10,6 +10,7 @@ export default function AdminOverviewPage() {
     submissions: 0,
     completions: 0
   });
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
@@ -31,6 +32,13 @@ export default function AdminOverviewPage() {
         .from("task_statuses")
         .select("*", { count: "exact", head: true })
         .eq("status", "completed");
+
+      // Get role
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+        if (profile) setUserRole(profile.role);
+      }
 
       setStats({
         users: usersCount || 0,
@@ -72,17 +80,19 @@ export default function AdminOverviewPage() {
         />
       </div>
 
-      <div className="mt-12 bg-black/40 border border-red-500/20 rounded-2xl p-8">
-        <h3 className="text-xl font-bold font-syne mb-4 text-red-400">Admin Instructions</h3>
-        <p className="text-muted-foreground mb-4">
-          Welcome to the STAR Admin Command Center. From here, you possess full override authority over the recruitment portal.
-        </p>
-        <ul className="list-disc list-inside space-y-2 text-muted-foreground/80 font-mono text-sm">
-          <li>Use <strong>Notifications</strong> to broadcast global alerts or task-specific hints. These appear directly on student dashboards.</li>
-          <li>Use <strong>Overrides</strong> to manually edit student rankings on the Task 3 Leaderboard if their Jupyter Notebook proves their score was illegitimate.</li>
-          <li>You can also reset a student's submission count in the Overrides tab if they face technical difficulties.</li>
-        </ul>
-      </div>
+      {userRole === "admin" && (
+        <div className="mt-12 bg-black/40 border border-red-500/20 rounded-2xl p-8">
+          <h3 className="text-xl font-bold font-syne mb-4 text-red-400">Admin Instructions</h3>
+          <p className="text-muted-foreground mb-4">
+            Welcome to the STAR Admin Command Center. From here, you possess full override authority over the recruitment portal.
+          </p>
+          <ul className="list-disc list-inside space-y-2 text-muted-foreground/80 font-mono text-sm">
+            <li>Use <strong>Notifications</strong> to broadcast global alerts or task-specific hints. These appear directly on student dashboards.</li>
+            <li>Use <strong>Overrides</strong> to manually edit student rankings on the Task 3 Leaderboard if their Jupyter Notebook proves their score was illegitimate.</li>
+            <li>You can also reset a student's submission count in the Overrides tab if they face technical difficulties.</li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

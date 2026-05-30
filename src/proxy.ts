@@ -37,7 +37,7 @@ export default async function proxy(request: NextRequest) {
         .eq('id', user.id)
         .single()
       
-      if (!profile || profile.role !== 'admin') {
+      if (!profile || (profile.role !== 'admin' && profile.role !== 'evaluator')) {
          const url = request.nextUrl.clone()
          url.pathname = '/dashboard'
          return NextResponse.redirect(url)

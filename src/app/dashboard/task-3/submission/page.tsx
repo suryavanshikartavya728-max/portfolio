@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import TaskSubNav from "@/components/star/TaskSubNav";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Upload, AlertTriangle } from "lucide-react";
 
@@ -20,6 +21,7 @@ export default function Task3Submission() {
   const [loadingDeadline, setLoadingDeadline] = useState(true);
 
   const supabase = createClient();
+  const router = useRouter();
 
   React.useEffect(() => {
     async function checkLock() {
@@ -85,6 +87,7 @@ export default function Task3Submission() {
       }, { onConflict: 'user_id' });
 
       toast.success("Task 3 submitted and leaderboard updated!");
+      router.push("/dashboard");
     } catch (err: any) {
       toast.error(err.message || "Failed to submit task");
     } finally {

@@ -17,6 +17,7 @@ export default function Task3Leaderboard() {
         .select(`
           full_name,
           roll_number,
+          is_disqualified,
           leaderboard!inner(overall_score, rank, is_overridden),
           submissions!inner(accuracy, f1_score, precision_score, recall, roc_auc)
         `)
@@ -42,6 +43,8 @@ export default function Task3Leaderboard() {
         });
 
         const sorted = calculatedData.sort((a: any, b: any) => {
+          if (a.is_disqualified && !b.is_disqualified) return 1;
+          if (!a.is_disqualified && b.is_disqualified) return -1;
           return b.calculatedScore - a.calculatedScore;
         });
         setLeaderboard(sorted);
@@ -97,19 +100,20 @@ export default function Task3Leaderboard() {
               <tbody>
                 {leaderboard.map((entry, index) => {
                   const lb = entry.leaderboard[0] || {};
+                  const isDisq = !!entry.is_disqualified;
                   const rank = lb.is_overridden ? lb.rank : index + 1;
                   const profile = entry;
                   const subs = entry.submissions[0] || {};
 
                   return (
-                    <tr key={profile.roll_number} className="border-b border-[var(--color-star-border)]/50 hover:bg-[var(--color-star-surface2)] transition-colors group">
+                    <tr key={profile.roll_number} className={`border-b border-[var(--color-star-border)]/50 hover:bg-[var(--color-star-surface2)] transition-colors group ${isDisq ? "bg-red-500/5 text-red-500/90" : ""}`}>
                       <td className="py-4 pl-4">
                         <div className="flex items-center gap-2">
-                          {rank === 1 && <Trophy size={18} className="text-yellow-400" />}
-                          {rank === 2 && <Medal size={18} className="text-gray-300" />}
-                          {rank === 3 && <Award size={18} className="text-amber-600" />}
-                          <span className={`font-mono font-bold ${rank <= 3 ? "text-lg" : "text-muted-foreground"}`}>
-                            #{rank}
+                          {!isDisq && rank === 1 && <Trophy size={18} className="text-yellow-400" />}
+                          {!isDisq && rank === 2 && <Medal size={18} className="text-gray-300" />}
+                          {!isDisq && rank === 3 && <Award size={18} className="text-amber-600" />}
+                          <span className={`font-mono font-bold ${isDisq ? "text-red-500" : rank <= 3 ? "text-lg" : "text-muted-foreground"}`}>
+                            {isDisq ? "DISQ" : `#${rank}`}
                           </span>
                         </div>
                       </td>
@@ -118,16 +122,22 @@ export default function Task3Leaderboard() {
                         <div className="text-xs text-muted-foreground font-mono">{profile.roll_number}</div>
                       </td>
                       <td className="py-4 text-right font-mono text-sm">
-                        {subs?.accuracy?.toFixed(4) || "0.0000"}
+                        {isDisq ? "N/A" : subs?.accuracy?.toFixed(4) || "0.0000"}
                       </td>
                       <td className="py-4 text-right font-mono text-sm hidden sm:table-cell text-muted-foreground group-hover:text-foreground transition-colors">
-                        {subs?.f1_score?.toFixed(4) || "0.0000"}
+                        {isDisq ? "N/A" : subs?.f1_score?.toFixed(4) || "0.0000"}
                       </td>
                       <td className="py-4 text-right font-mono text-sm hidden md:table-cell text-muted-foreground group-hover:text-foreground transition-colors">
-                        {subs?.roc_auc?.toFixed(4) || "0.0000"}
+                        {isDisq ? "N/A" : subs?.roc_auc?.toFixed(4) || "0.0000"}
                       </td>
                       <td className="py-4 pr-4 text-right font-mono font-bold text-[var(--color-star-task3)]">
-                        {profile.calculatedScore?.toFixed(4) || "0.0000"}
+                        {isDisq ? (
+                          <span className="text-xs font-mono font-bold bg-red-500/20 border border-red-500/30 text-red-500 px-2 py-0.5 rounded uppercase tracking-wider">
+                            Disqualified
+                          </span>
+                        ) : (
+                          profile.calculatedScore?.toFixed(4) || "0.0000"
+                        )}
                       </td>
                     </tr>
                   );

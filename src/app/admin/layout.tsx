@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ShieldAlert, LayoutDashboard, Bell, PenTool, LogOut, Loader2, Users } from "lucide-react";
+import { ShieldAlert, LayoutDashboard, Bell, PenTool, LogOut, Loader2, Users, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 const adminNavItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/users", label: "User Submissions", icon: Users },
+  { href: "/admin/leaderboard", label: "Leaderboard", icon: Trophy },
   { href: "/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/admin/overrides", label: "Overrides", icon: PenTool },
   { href: "/admin/settings", label: "System Settings", icon: ShieldAlert },
@@ -18,6 +19,7 @@ const adminNavItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -38,11 +40,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .eq("id", user.id)
         .single();
 
-      if (profile?.role === "admin") {
+      if (profile?.role === "admin" || profile?.role === "evaluator") {
         setIsAuthorized(true);
+        setUserRole(profile.role);
       } else {
         setIsAuthorized(false);
-        toast.error("Unauthorized. Admin access required.");
+        toast.error("Unauthorized. Admin or Evaluator access required.");
         router.push("/dashboard");
       }
     }
@@ -62,6 +65,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (isAuthorized === false) return null;
 
+  const filteredNavItems = adminNavItems.filter((item) => {
+    if (userRole === "evaluator") {
+      return item.href === "/admin" || item.href === "/admin/users" || item.href === "/admin/leaderboard";
+    }
+    return true;
+  });
+
   return (
     <div className="min-h-screen bg-[#0a0a0c] flex flex-col md:flex-row font-syne text-foreground">
       {/* Sidebar */}
@@ -71,15 +81,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <ShieldAlert className="text-red-500" size={20} />
           </div>
           <div>
-            <h2 className="font-bold text-xl tracking-wider text-red-500">ADMIN</h2>
+            <h2 className="font-bold text-xl tracking-wider text-red-500">{userRole === "admin" ? "ADMIN" : "EVALUATOR"}</h2>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-mono">
-              Command Center
+              {userRole === "admin" ? "Command Center" : "Evaluation Portal"}
             </p>
           </div>
         </div>
 
         <nav className="flex-1 px-4 py-8 space-y-2">
-          {adminNavItems.map((item) => {
+          {filteredNavItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
@@ -104,7 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-muted-foreground hover:bg-white/5 transition-all font-medium"
           >
             <LogOut size={18} className="rotate-180" />
-            Exit Admin
+            Exit Portal
           </Link>
         </div>
       </div>
