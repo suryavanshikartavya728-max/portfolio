@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { Settings, Save, User } from "lucide-react";
-import { validateRollNumber, validateFullName } from "@/lib/validations";
+import { validateFullName } from "@/lib/validations";
 
 export default function SettingsPage() {
   const [fullName, setFullName] = useState("");
@@ -44,11 +44,6 @@ export default function SettingsPage() {
       toast.error("Full Name must be at least 3 characters.");
       return;
     }
-    
-    if (!validateRollNumber(rollNumber)) {
-      toast.error("Invalid Roll Number. Must start with B, D, M, T, or S followed by 24XXX or 25XXX (001-600).");
-      return;
-    }
 
     setSaving(true);
     try {
@@ -58,8 +53,7 @@ export default function SettingsPage() {
       const { error } = await supabase
         .from("profiles")
         .update({
-          full_name: fullName,
-          roll_number: rollNumber.toUpperCase()
+          full_name: fullName
         })
         .eq("id", user.id);
 
@@ -74,8 +68,6 @@ export default function SettingsPage() {
       setSaving(false);
     }
   };
-
-  const rollIsValid = rollNumber.length > 0 ? validateRollNumber(rollNumber) : null;
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -125,28 +117,22 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2 flex justify-between">
-                <span>Roll Number</span>
-                {rollIsValid === true && <span className="text-[var(--color-star-success)] text-xs flex items-center">Valid Format</span>}
-                {rollIsValid === false && <span className="text-[var(--color-star-danger)] text-xs flex items-center">Invalid Format</span>}
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
+                Roll Number
               </label>
               <input
                 type="text"
-                required
+                disabled
                 value={rollNumber}
-                onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
-                className={`w-full px-4 py-3 rounded-lg bg-background border outline-none transition-all text-foreground uppercase font-mono ${
-                  rollIsValid === false 
-                    ? "border-[var(--color-star-danger)] focus:ring-[var(--color-star-danger)]" 
-                    : "border-[var(--color-star-border)] focus:border-[var(--color-star-accent)] focus:ring-1 focus:ring-[var(--color-star-accent)]"
-                }`}
+                className="w-full px-4 py-3 rounded-lg bg-background/50 border border-[var(--color-star-border)] text-muted-foreground cursor-not-allowed uppercase font-mono"
               />
+              <p className="text-xs text-muted-foreground mt-2">Roll number cannot be changed once initialized.</p>
             </div>
 
             <div className="pt-6 border-t border-[var(--color-star-border)]">
               <button
                 type="submit"
-                disabled={saving || rollIsValid === false}
+                disabled={saving}
                 className="bg-[var(--color-star-accent)] text-background font-bold py-3 px-8 rounded-xl hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save size={20} />
