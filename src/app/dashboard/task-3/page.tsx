@@ -53,8 +53,10 @@ The assessment is based around lunar surface analysis using Digital Elevation Mo
 
           <h3 className="text-xl font-bold font-syne mt-8 mb-4">Deliverables</h3>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-            <li>A Jupyter Notebook (or equivalent) hosted on a private GitHub repository. You must add the GitHub accounts <code>Kartavya728</code> and <code>STAC-IITMandi</code> as collaborators to your repository.</li>
-            <li>A detailed README explaining your ML pipeline, feature engineering, and model choices.</li>
+            <li>Download the Task 3 Starter Kit from the Resources page.</li>
+            <li>Implement your model training inside the downloaded folder structure. Ensure weights are placed in <code>weights_file</code> and code in <code>model_code</code>.</li>
+            <li>Update the <code>readme.md</code> with your approach and observations.</li>
+            <li>Zip your completed folder (retaining the exact structure) and submit it, or provide a private GitHub repository containing this exact structure (with <code>Kartavya728</code> and <code>STAC-IITMandi</code> as collaborators).</li>
             <li>Submission of your finalized metrics on the Submission tab.</li>
           </ul>
         </div>

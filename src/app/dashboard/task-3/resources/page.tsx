@@ -51,6 +51,27 @@ export default function Task3ResourcesPage() {
                 <Package className="text-[var(--color-star-task3)]" size={24} />
               </div>
               <div className="w-full">
+                <h3 className="font-bold text-lg font-syne mb-2">Task 3 Starter Kit</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Download the required template folder structure containing basic training and evaluation scripts.
+                </p>
+                <a 
+                  href="/data/task-3-star-test-2026.zip" 
+                  download
+                  className="inline-flex items-center gap-2 bg-[var(--color-star-task3)]/10 text-[var(--color-star-task3)] hover:bg-[var(--color-star-task3)] hover:text-background font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
+                >
+                  <Download size={16} /> Download Starter Kit (.zip)
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 bg-background/50 border border-[var(--color-star-border)] rounded-xl mt-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-[var(--color-star-task3)]/10 rounded-lg shrink-0">
+                <Package className="text-[var(--color-star-task3)]" size={24} />
+              </div>
+              <div className="w-full">
                 <h3 className="font-bold text-lg font-syne mb-2">Library Documentation</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   The following functions are available in the <code>lunadem</code> library to help you complete your task.
