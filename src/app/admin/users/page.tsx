@@ -290,7 +290,7 @@ export default function UserSubmissionsPage() {
           />
         </div>
         <div className="flex gap-2">
-          {["all", 1, 2, 3].map((f) => (
+          {["all", 1, 2, 3, 4].map((f) => (
             <button
               key={f}
               onClick={() => setTaskFilter(f as any)}
@@ -375,14 +375,14 @@ export default function UserSubmissionsPage() {
                           <td className="p-4 text-center">
                             <span
                               className={`px-3 py-1 text-xs rounded-full font-mono font-bold ${
-                                completedCount === 3
+                                completedCount === 4
                                   ? "bg-green-500/10 text-green-500 border border-green-500/20"
                                   : completedCount > 0
                                   ? "bg-yellow-500/10 text-yellow-500 border border-yellow-500/20"
                                   : "bg-white/5 text-muted-foreground border border-white/10"
                               }`}
                             >
-                              {completedCount} / 3
+                              {completedCount} / 4
                             </span>
                           </td>
                           <td className="p-4 text-right">

@@ -15,6 +15,7 @@ export default function AdminLeaderboardPage() {
   const [t1Thresh, setT1Thresh] = useState("0");
   const [t2Thresh, setT2Thresh] = useState("0");
   const [t3Thresh, setT3Thresh] = useState("0");
+  const [t4Thresh, setT4Thresh] = useState("0");
   const [totalThresh, setTotalThresh] = useState("0");
   const [isSavingThresh, setIsSavingThresh] = useState(false);
 
@@ -34,6 +35,7 @@ export default function AdminLeaderboardPage() {
       setT1Thresh(settingsData.task_1_threshold?.toString() || "0");
       setT2Thresh(settingsData.task_2_threshold?.toString() || "0");
       setT3Thresh(settingsData.task_3_threshold?.toString() || "0");
+      setT4Thresh(settingsData.task_4_threshold?.toString() || "0");
       setTotalThresh(settingsData.total_threshold?.toString() || "0");
     }
 
@@ -72,6 +74,7 @@ export default function AdminLeaderboardPage() {
         let t1 = 0;
         let t2 = 0;
         let t3 = 0;
+        let t4 = 0;
 
         profile.submissions?.forEach((sub: any) => {
           const evalObj = Array.isArray(sub.evaluations) ? sub.evaluations[0] : sub.evaluations;
@@ -80,10 +83,11 @@ export default function AdminLeaderboardPage() {
             if (sub.task_number === 1) t1 = score;
             if (sub.task_number === 2) t2 = score;
             if (sub.task_number === 3) t3 = score;
+            if (sub.task_number === 4) t4 = score;
           }
         });
 
-        const overall = t1 + t2 + t3;
+        const overall = t1 + t2 + t3 + t4;
 
         return {
           id: profile.id,
@@ -93,6 +97,7 @@ export default function AdminLeaderboardPage() {
           t1,
           t2,
           t3,
+          t4,
           overall
         };
       });
@@ -128,6 +133,7 @@ export default function AdminLeaderboardPage() {
           task_1_threshold: parseFloat(t1Thresh) || 0,
           task_2_threshold: parseFloat(t2Thresh) || 0,
           task_3_threshold: parseFloat(t3Thresh) || 0,
+          task_4_threshold: parseFloat(t4Thresh) || 0,
           total_threshold: parseFloat(totalThresh) || 0
         })
         .eq("id", 1);
@@ -148,20 +154,22 @@ export default function AdminLeaderboardPage() {
     const t1Limit = parseFloat(t1Thresh) || 0;
     const t2Limit = parseFloat(t2Thresh) || 0;
     const t3Limit = parseFloat(t3Thresh) || 0;
+    const t4Limit = parseFloat(t4Thresh) || 0;
     const totalLimit = parseFloat(totalThresh) || 0;
 
     const q1 = row.t1 >= t1Limit;
     const q2 = row.t2 >= t2Limit;
     const q3 = row.t3 >= t3Limit;
+    const q4 = row.t4 >= t4Limit;
     const qTotal = row.overall >= totalLimit;
 
     // Golden if ALL cleared
-    if (q1 && q2 && q3 && qTotal) {
+    if (q1 && q2 && q3 && q4 && qTotal) {
       return "border-yellow-500/40 bg-yellow-500/5 text-yellow-400 font-bold relative overflow-hidden group shadow-[inset_0_0_15px_rgba(234,179,8,0.15)] after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-yellow-500/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000";
     }
 
     // Green if AT LEAST ONE cleared
-    if (q1 || q2 || q3 || qTotal) {
+    if (q1 || q2 || q3 || q4 || qTotal) {
       return "border-green-500/25 bg-green-500/5 text-green-400";
     }
 
@@ -197,7 +205,7 @@ export default function AdminLeaderboardPage() {
         </h2>
         
         <form onSubmit={handleSaveThresholds} className="space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div>
               <label className="block text-xs font-mono text-muted-foreground mb-1">Task 1 Threshold</label>
               <input
@@ -231,6 +239,18 @@ export default function AdminLeaderboardPage() {
                 disabled={userRole !== "admin"}
                 value={t3Thresh}
                 onChange={e => setT3Thresh(e.target.value)}
+                className="w-full px-3 py-2 rounded bg-black border border-white/10 text-foreground font-mono outline-none focus:border-red-500/50 text-sm disabled:opacity-40"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-muted-foreground mb-1">Task 4 Threshold</label>
+              <input
+                type="number"
+                step="0.01"
+                required
+                disabled={userRole !== "admin"}
+                value={t4Thresh}
+                onChange={e => setT4Thresh(e.target.value)}
                 className="w-full px-3 py-2 rounded bg-black border border-white/10 text-foreground font-mono outline-none focus:border-red-500/50 text-sm disabled:opacity-40"
               />
             </div>
@@ -294,6 +314,7 @@ export default function AdminLeaderboardPage() {
                   <th className="p-4 font-medium text-center font-mono">Task 1</th>
                   <th className="p-4 font-medium text-center font-mono">Task 2</th>
                   <th className="p-4 font-medium text-center font-mono">Task 3</th>
+                  <th className="p-4 font-medium text-center font-mono">Task 4</th>
                   <th className="p-4 font-medium text-right font-mono text-[var(--color-star-accent)]">Overall Score</th>
                 </tr>
               </thead>
@@ -341,6 +362,7 @@ export default function AdminLeaderboardPage() {
                       <td className="p-4 text-center font-mono">{row.t1.toFixed(2)}</td>
                       <td className="p-4 text-center font-mono">{row.t2.toFixed(2)}</td>
                       <td className="p-4 text-center font-mono">{row.t3.toFixed(2)}</td>
+                      <td className="p-4 text-center font-mono">{row.t4.toFixed(2)}</td>
                       <td className="p-4 text-right font-mono font-bold text-lg">
                         {row.overall.toFixed(2)}
                       </td>
