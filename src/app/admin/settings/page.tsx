@@ -12,7 +12,8 @@ export default function AdminSettingsPage() {
   const [params, setParams] = useState([
     { task_number: 1, param_1_title: "Score 1", param_2_title: "Score 2", param_3_title: "Score 3" },
     { task_number: 2, param_1_title: "Score 1", param_2_title: "Score 2", param_3_title: "Score 3" },
-    { task_number: 3, param_1_title: "Score 1", param_2_title: "Score 2", param_3_title: "Score 3" }
+    { task_number: 3, param_1_title: "Score 1", param_2_title: "Score 2", param_3_title: "Score 3" },
+    { task_number: 4, param_1_title: "Score 1", param_2_title: "Score 2", param_3_title: "Score 3" }
   ]);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -50,7 +51,7 @@ export default function AdminSettingsPage() {
 
       if (paramsData && paramsData.length > 0) {
         // Map to state
-        const mapped = [1, 2, 3].map(taskNum => {
+        const mapped = [1, 2, 3, 4].map(taskNum => {
           const match = paramsData.find(p => p.task_number === taskNum);
           return match || { task_number: taskNum, param_1_title: "Score 1", param_2_title: "Score 2", param_3_title: "Score 3" };
         });
@@ -221,17 +222,19 @@ export default function AdminSettingsPage() {
             Customize Scoring Metric Titles (3 Parameters Per Task)
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {params.map((taskParams, idx) => {
               const taskColors = [
                 "border-[var(--color-star-task1)]/20 hover:border-[var(--color-star-task1)]/40",
                 "border-[var(--color-star-task2)]/20 hover:border-[var(--color-star-task2)]/40",
-                "border-[var(--color-star-task3)]/20 hover:border-[var(--color-star-task3)]/40"
+                "border-[var(--color-star-task3)]/20 hover:border-[var(--color-star-task3)]/40",
+                "border-[#f97316]/20 hover:border-[#f97316]/40"
               ];
               const textColors = [
                 "text-[var(--color-star-task1)]",
                 "text-[var(--color-star-task2)]",
-                "text-[var(--color-star-task3)]"
+                "text-[var(--color-star-task3)]",
+                "text-[#f97316]"
               ];
 
               return (
