@@ -28,7 +28,7 @@ export default function Task4ResourcesPage() {
                 <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                   Download a previous Preliminary Design Review (PDR) document for reference. 
                   <br />
-                  <span className="font-medium text-foreground">Note:</span> Pages 116 through 125 of this document serve as an excellent reference for the expected standard and format of your deliverables.
+                  <span className="font-medium text-foreground">Note:</span> Pages 35 through 43, as well as pages 116 through 125 of this document, serve as an excellent reference for the expected standard and format of your deliverables.
                 </p>
                 <a 
                   href="/Cansat_2023_1072_PDR.pdf" 
