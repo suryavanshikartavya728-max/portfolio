@@ -24,6 +24,27 @@ export default function Task4ResourcesPage() {
                 <Download className="text-orange-500" size={24} />
               </div>
               <div>
+                <h3 className="font-bold text-lg font-syne mb-2">Task 4 Problem Statement</h3>
+                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  Download the complete official problem statement for the Hardware Systems Development task.
+                </p>
+                <a 
+                  href="/CanSat_Task_4.pdf" 
+                  download
+                  className="inline-flex items-center gap-2 bg-orange-500/10 text-orange-500 hover:bg-orange-500 hover:text-background font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
+                >
+                  <Download size={16} /> Download Problem Statement (PDF)
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 bg-background/50 border border-[var(--color-star-border)] rounded-xl">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-orange-500/10 rounded-lg shrink-0">
+                <Download className="text-orange-500" size={24} />
+              </div>
+              <div>
                 <h3 className="font-bold text-lg font-syne mb-2">CanSat PDR Example</h3>
                 <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                   Download a previous Preliminary Design Review (PDR) document for reference. 

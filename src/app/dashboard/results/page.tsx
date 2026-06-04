@@ -56,7 +56,7 @@ export default function ResultsPage() {
 
         if (lbData) {
           const processed = lbData.map((p: any) => {
-            let t1 = 0, t2 = 0, t3 = 0;
+            let t1 = 0, t2 = 0, t3 = 0, t4 = 0;
             p.submissions?.forEach((sub: any) => {
               const ev = Array.isArray(sub.evaluations) ? sub.evaluations[0] : sub.evaluations;
               if (ev && !ev.is_invalid && sub.is_reviewed) {
@@ -64,6 +64,7 @@ export default function ResultsPage() {
                 if (sub.task_number === 1) t1 = sc;
                 if (sub.task_number === 2) t2 = sc;
                 if (sub.task_number === 3) t3 = sc;
+                if (sub.task_number === 4) t4 = sc;
               }
             });
             return {
@@ -71,8 +72,8 @@ export default function ResultsPage() {
               full_name: p.full_name,
               roll_number: p.roll_number,
               is_disqualified: !!p.is_disqualified,
-              t1, t2, t3,
-              overall: t1 + t2 + t3
+              t1, t2, t3, t4,
+              overall: t1 + t2 + t3 + t4
             };
           });
 
@@ -129,18 +130,20 @@ export default function ResultsPage() {
     const t1Limit = settings?.task_1_threshold || 0;
     const t2Limit = settings?.task_2_threshold || 0;
     const t3Limit = settings?.task_3_threshold || 0;
+    const t4Limit = settings?.task_4_threshold || 0;
     const totalLimit = settings?.total_threshold || 0;
 
     const q1 = row.t1 >= t1Limit;
     const q2 = row.t2 >= t2Limit;
     const q3 = row.t3 >= t3Limit;
+    const q4 = row.t4 >= t4Limit;
     const qTotal = row.overall >= totalLimit;
 
-    if (q1 && q2 && q3 && qTotal) {
+    if (q1 && q2 && q3 && q4 && qTotal) {
       return "border-yellow-500/40 bg-yellow-500/5 text-yellow-400 font-bold relative overflow-hidden group shadow-[inset_0_0_15px_rgba(234,179,8,0.15)] after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-yellow-500/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000";
     }
 
-    if (q1 || q2 || q3 || qTotal) {
+    if (q1 || q2 || q3 || q4 || qTotal) {
       return "border-green-500/25 bg-green-500/5 text-green-400";
     }
 
@@ -172,19 +175,39 @@ export default function ResultsPage() {
     );
   }
 
-  const ownOverallScore = [1, 2, 3].reduce((acc, taskNum) => {
+  const ownOverallScore = [1, 2, 3, 4].reduce((acc, taskNum) => {
     const sc = getOwnTaskScore(taskNum);
     return acc + (sc.status === "reviewed" ? sc.total : 0);
   }, 0);
 
-  const totalThreshold = settings?.total_threshold || 0;
-  const overallMargin = ownOverallScore - totalThreshold;
+  const ownT1 = getOwnTaskScore(1).status === "reviewed" ? getOwnTaskScore(1).total : 0;
+  const ownT2 = getOwnTaskScore(2).status === "reviewed" ? getOwnTaskScore(2).total : 0;
+  const ownT3 = getOwnTaskScore(3).status === "reviewed" ? getOwnTaskScore(3).total : 0;
+  const ownT4 = getOwnTaskScore(4).status === "reviewed" ? getOwnTaskScore(4).total : 0;
 
-  const MarginDisplay = ({ margin }: { margin: number }) => {
-    if (margin > 0) return <span className="text-green-500 flex items-center gap-0.5"><ArrowUpRight size={14}/> +{margin.toFixed(2)}</span>;
-    if (margin < 0) return <span className="text-red-500 flex items-center gap-0.5"><ArrowDownRight size={14}/> {margin.toFixed(2)}</span>;
-    return <span className="text-muted-foreground flex items-center gap-0.5"><Minus size={14}/> 0.00</span>;
-  };
+  const q1 = ownT1 >= (settings?.task_1_threshold || 0);
+  const q2 = ownT2 >= (settings?.task_2_threshold || 0);
+  const q3 = ownT3 >= (settings?.task_3_threshold || 0);
+  const q4 = ownT4 >= (settings?.task_4_threshold || 0);
+  const qTotal = ownOverallScore >= (settings?.total_threshold || 0);
+  
+  const isQualified = q1 || q2 || q3 || q4 || qTotal;
+
+  // Best Performers Calculations
+  const validUsers = leaderboard.filter(u => !u.is_disqualified);
+  const bestOverall = validUsers.reduce((prev, current) => (prev.overall > current.overall) ? prev : current, validUsers[0] || null);
+  const bestT1 = validUsers.reduce((prev, current) => (prev.t1 > current.t1) ? prev : current, validUsers[0] || null);
+  const bestT2 = validUsers.reduce((prev, current) => (prev.t2 > current.t2) ? prev : current, validUsers[0] || null);
+  const bestT3 = validUsers.reduce((prev, current) => (prev.t3 > current.t3) ? prev : current, validUsers[0] || null);
+  const bestT4 = validUsers.reduce((prev, current) => (prev.t4 > current.t4) ? prev : current, validUsers[0] || null);
+
+  const topPerformers = [
+    { category: "Overall Highest Scorer", user: bestOverall, score: bestOverall?.overall },
+    { category: "Task 1 Best Performer", user: bestT1, score: bestT1?.t1 },
+    { category: "Task 2 Best Performer", user: bestT2, score: bestT2?.t2 },
+    { category: "Task 3 Best Performer", user: bestT3, score: bestT3?.t3 },
+    { category: "Task 4 Best Performer", user: bestT4, score: bestT4?.t4 },
+  ];
 
   return (
     <div className="space-y-10 max-w-6xl mx-auto">
@@ -232,24 +255,25 @@ export default function ResultsPage() {
                   {ownOverallScore.toFixed(2)}
                 </div>
                 <div className="flex items-center justify-end gap-2 text-xs font-mono mt-2">
-                  <span className="text-muted-foreground">Cutoff: {totalThreshold.toFixed(2)}</span>
-                  <div className="w-px h-3 bg-white/20"></div>
-                  <MarginDisplay margin={overallMargin} />
+                  <span className="text-muted-foreground">Status:</span>
+                  <span className={`font-bold px-2 py-0.5 rounded ${isQualified ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+                    {isQualified ? "QUALIFIED" : "NOT QUALIFIED"}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((taskNum) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((taskNum) => {
               const sc = getOwnTaskScore(taskNum);
               const titles = getOwnParamTitles(taskNum);
-              const limit = taskNum === 1 ? settings?.task_1_threshold : taskNum === 2 ? settings?.task_2_threshold : settings?.task_3_threshold;
+              const limit = taskNum === 1 ? settings?.task_1_threshold : taskNum === 2 ? settings?.task_2_threshold : taskNum === 3 ? settings?.task_3_threshold : settings?.task_4_threshold;
               const limitVal = parseFloat(limit) || 0;
               const margin = sc.status === "reviewed" ? sc.total - limitVal : 0;
               
-              const borderColors = ["border-[var(--color-star-task1)]/20", "border-[var(--color-star-task2)]/20", "border-[var(--color-star-task3)]/20"];
-              const textColors = ["text-[var(--color-star-task1)]", "text-[var(--color-star-task2)]", "text-[var(--color-star-task3)]"];
+              const borderColors = ["border-[var(--color-star-task1)]/20", "border-[var(--color-star-task2)]/20", "border-[var(--color-star-task3)]/20", "border-[#f97316]/20"];
+              const textColors = ["text-[var(--color-star-task1)]", "text-[var(--color-star-task2)]", "text-[var(--color-star-task3)]", "text-[#f97316]"];
 
               return (
                 <div key={taskNum} className={`bg-[#0a0a0c] border rounded-xl p-5 flex flex-col ${borderColors[taskNum - 1]}`}>
@@ -296,8 +320,12 @@ export default function ResultsPage() {
                         </div>
                       </div>
                       <div className="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-xs font-mono bg-black/20 px-3 py-2 rounded">
-                        <span className="text-muted-foreground">Margin vs Cutoff</span>
-                        <MarginDisplay margin={margin} />
+                        <span className="text-muted-foreground">Threshold Passed?</span>
+                        {margin >= 0 ? (
+                          <span className="text-green-500 font-bold">YES</span>
+                        ) : (
+                          <span className="text-red-500 font-bold">NO</span>
+                        )}
                       </div>
                     </>
                   )}
@@ -307,6 +335,39 @@ export default function ResultsPage() {
           </div>
         </div>
       )}
+
+      {/* Top Performers Table */}
+      <div className="bg-black/40 border border-red-500/20 rounded-2xl p-6 relative overflow-hidden">
+        <div className="border-b border-white/5 pb-4 mb-6">
+          <h2 className="text-xl font-bold font-syne text-foreground flex items-center gap-2">
+            <Sparkles className="text-yellow-500" size={24} />
+            Hall of Fame: Top Performers
+          </h2>
+          <p className="text-xs text-muted-foreground font-mono mt-1">
+            Celebrating the highest scorers across each individual task and overall performance.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {topPerformers.map((perf, i) => (
+            <div key={i} className="bg-[#0a0a0c] border border-white/10 rounded-xl p-4 flex flex-col justify-between">
+              <div className="text-[10px] text-muted-foreground font-mono uppercase mb-2 tracking-wider">{perf.category}</div>
+              {perf.user ? (
+                <div>
+                  <div className="font-bold text-sm font-syne text-[var(--color-star-accent)] line-clamp-1" title={perf.user.full_name}>
+                    {perf.user.full_name}
+                  </div>
+                  <div className="flex justify-between items-end mt-2">
+                    <span className="text-xs font-mono text-muted-foreground">{perf.user.roll_number}</span>
+                    <span className="font-mono font-bold text-white">{perf.score?.toFixed(2)}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-muted-foreground text-xs italic font-mono mt-2">No data yet</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Overall Leaderboard */}
       <div className="bg-black/40 border border-red-500/20 rounded-2xl p-6 relative overflow-hidden">
@@ -329,6 +390,7 @@ export default function ResultsPage() {
                 <th className="p-3 font-medium text-center font-mono">Task 1</th>
                 <th className="p-3 font-medium text-center font-mono">Task 2</th>
                 <th className="p-3 font-medium text-center font-mono">Task 3</th>
+                <th className="p-3 font-medium text-center font-mono">Task 4</th>
                 <th className="p-3 font-medium text-right font-mono text-[var(--color-star-accent)]">Overall Score</th>
               </tr>
             </thead>
@@ -367,6 +429,7 @@ export default function ResultsPage() {
                     <td className="p-3 text-center font-mono">{row.t1.toFixed(2)}</td>
                     <td className="p-3 text-center font-mono">{row.t2.toFixed(2)}</td>
                     <td className="p-3 text-center font-mono">{row.t3.toFixed(2)}</td>
+                    <td className="p-3 text-center font-mono">{row.t4.toFixed(2)}</td>
                     <td className="p-3 text-right font-mono font-bold">
                       {row.overall.toFixed(2)}
                     </td>
