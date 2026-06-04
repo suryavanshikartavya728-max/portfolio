@@ -12,6 +12,7 @@ export default function ComparePage() {
     task1Count: 0,
     task2Count: 0,
     task3Count: 0,
+    task4Count: 0,
   });
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -24,11 +25,12 @@ export default function ComparePage() {
       // 2. Get submissions grouped by task
       const { data: subs } = await supabase.from("submissions").select("task_number");
       
-      let t1 = 0, t2 = 0, t3 = 0;
+      let t1 = 0, t2 = 0, t3 = 0, t4 = 0;
       subs?.forEach(s => {
         if (s.task_number === 1) t1++;
         if (s.task_number === 2) t2++;
         if (s.task_number === 3) t3++;
+        if (s.task_number === 4) t4++;
       });
 
       setStats({
@@ -37,6 +39,7 @@ export default function ComparePage() {
         task1Count: t1,
         task2Count: t2,
         task3Count: t3,
+        task4Count: t4,
       });
       setLoading(false);
     }
@@ -47,6 +50,7 @@ export default function ComparePage() {
     { name: 'Task 1', value: stats.task1Count, color: 'var(--color-star-task1)' },
     { name: 'Task 2', value: stats.task2Count, color: 'var(--color-star-task2)' },
     { name: 'Task 3', value: stats.task3Count, color: 'var(--color-star-task3)' },
+    { name: 'Task 4', value: stats.task4Count, color: '#f97316' },
   ];
 
   const StatCard = ({ title, value, icon: Icon, colorClass }: any) => (
@@ -67,12 +71,13 @@ export default function ComparePage() {
         Recruitment <span className="text-[var(--color-star-accent)]">Analytics</span>
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
         <StatCard title="Total Applicants" value={stats.totalUsers} icon={Users} colorClass="text-[var(--color-star-accent)]" />
         <StatCard title="Total Submissions" value={stats.totalSubmissions} icon={FileCode} colorClass="text-muted-foreground" />
         <StatCard title="Task 1 Completed" value={stats.task1Count} icon={CheckCircle} colorClass="text-[var(--color-star-task1)]" />
         <StatCard title="Task 2 Completed" value={stats.task2Count} icon={CheckCircle} colorClass="text-[var(--color-star-task2)]" />
         <StatCard title="Task 3 Completed" value={stats.task3Count} icon={Activity} colorClass="text-[var(--color-star-task3)]" />
+        <StatCard title="Task 4 Completed" value={stats.task4Count} icon={Activity} colorClass="text-[#f97316]" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
