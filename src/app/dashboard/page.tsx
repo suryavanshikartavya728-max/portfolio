@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Code, Database, BrainCircuit, CheckCircle2, Clock, CircleDashed, AlertTriangle, Trophy, Medal, Award, Eye, FileText, Sparkles, Loader2 } from "lucide-react";
+import { ArrowRight, Code, Database, BrainCircuit, CheckCircle2, Clock, CircleDashed, AlertTriangle, Trophy, Medal, Award, Eye, FileText, Sparkles, Loader2, Rocket } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import CountdownTimer from "@/components/star/CountdownTimer";
 import { motion } from "framer-motion";
@@ -293,6 +293,31 @@ export default function DashboardPage() {
                   Utilize the <code>lunadem</code> simulation library to classify lunar terrain. Open-ended problem requiring ML pipelines and rigorous metric tracking.
                 </p>
                 <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-star-task3)]">
+                  {profile?.is_disqualified ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* TASK 4 */}
+          <Link href={profile?.is_disqualified ? "#" : "/dashboard/task-4"} className={`group block h-full ${profile?.is_disqualified ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
+            <div className="h-full bg-[var(--color-star-surface)] border border-[var(--color-star-border)] rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-orange-500/50 hover:bg-[var(--color-star-surface2)] flex flex-col">
+              <div className="flex justify-between items-start mb-6">
+                <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                  <Rocket className="text-orange-500" size={24} />
+                </div>
+                <StatusBadge status={getStatus(4)} />
+              </div>
+              
+              <div className="mt-auto">
+                <div className="text-[10px] text-orange-500 font-mono uppercase tracking-widest mb-2">Task 04</div>
+                <h3 className="text-xl font-bold mb-3 font-syne group-hover:text-orange-500 transition-colors">
+                  Hardware Systems Development
+                </h3>
+                <p className="text-sm text-muted-foreground mb-6 line-clamp-3">
+                  Design the complete Electrical Subsystem and select the necessary avionics and sensors required for a high-altitude CanSat mission.
+                </p>
+                <div className="flex items-center gap-2 text-sm font-medium text-orange-500">
                   {profile?.is_disqualified ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>

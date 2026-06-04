@@ -94,6 +94,7 @@ export default function AdminNotificationsPage() {
                 <option value="1">Task 1 Only</option>
                 <option value="2">Task 2 Only</option>
                 <option value="3">Task 3 Only</option>
+                <option value="4">Task 4 Only</option>
               </select>
             </div>
             
