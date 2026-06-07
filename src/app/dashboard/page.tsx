@@ -193,26 +193,16 @@ export default function DashboardPage() {
             
             {effectivePhase === "announcement" && (
               <div className="flex flex-col items-center justify-center text-center">
-                {ownOverallScore >= (settings?.total_threshold || 0) ? (
-                  <>
-                    <Award className="text-yellow-400 mb-3" size={36} />
-                    <h3 className="font-bold font-syne text-xl text-yellow-400">Congratulations!</h3>
-                    <p className="text-xs text-muted-foreground font-mono mt-1 max-w-[200px] mb-4">You are qualified for the interview round.</p>
-                  </>
-                ) : (
-                  <>
-                    <CircleDashed className="text-muted-foreground mb-3" size={32} />
-                    <h3 className="font-bold font-syne text-lg">Better Luck Next Time</h3>
-                    <p className="text-xs text-muted-foreground font-mono mt-1 max-w-[200px] mb-4">You did not meet the overall cutoff.</p>
-                  </>
-                )}
+                <Trophy className="text-yellow-400 mb-3" size={36} />
+                <h3 className="font-bold font-syne text-lg text-yellow-400">Final results are announced</h3>
+                <p className="text-xs text-muted-foreground font-mono mt-1 max-w-[200px] mb-4">Check your detailed scorecard.</p>
                 
                 <Link 
                   href="/dashboard/results" 
                   className="bg-[var(--color-star-accent)] text-black px-4 py-2 rounded-lg font-bold font-syne text-sm flex items-center gap-2 hover:bg-white transition-colors mt-2"
                 >
                   <Trophy size={16} />
-                  View Full Results
+                  View Results
                 </Link>
               </div>
             )}
