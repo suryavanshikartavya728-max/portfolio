@@ -25,7 +25,7 @@ export default function SignupPage() {
       return;
     }
     if (!validateRollNumber(rollNumber)) {
-      toast.error("Invalid Roll Number. Must start with B, D, M, T, or S followed by 2XXX to 25XXX (001-600).");
+      toast.error("Invalid Roll Number. Must start with B, D, M, T, S, or IM followed by 22XXX to 25XXX (001-600).");
       return;
     }
     if (!validatePassword(password)) {
@@ -138,7 +138,7 @@ export default function SignupPage() {
                 }`}
               />
               <p className="text-xs text-muted-foreground mt-1 font-mono">
-                Format: [B,D,M,T,S]22XXX to [B,D,M,T,S]25XXX (001-600)
+                Format: [B,D,M,T,S,IM]22XXX to [B,D,M,T,S,IM]25XXX (001-600)
               </p>
             </div>
 
