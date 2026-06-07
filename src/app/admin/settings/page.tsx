@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Save, Clock, ShieldAlert, Sliders, Layers, Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function AdminSettingsPage() {
+  const [startTime, setStartTime] = useState("");
   const [deadline, setDeadline] = useState("");
   const [phase, setPhase] = useState<"submission" | "evaluation" | "announcement">("submission");
   const [displayResults, setDisplayResults] = useState(false);
@@ -31,6 +32,12 @@ export default function AdminSettingsPage() {
         .single();
         
       if (settingsData) {
+        if (settingsData.start_time) {
+          const dateObj = new Date(settingsData.start_time);
+          const tzoffset = dateObj.getTimezoneOffset() * 60000;
+          const localISOTime = (new Date(dateObj.getTime() - tzoffset)).toISOString().slice(0, 16);
+          setStartTime(localISOTime);
+        }
         if (settingsData.deadline) {
           const dateObj = new Date(settingsData.deadline);
           const tzoffset = dateObj.getTimezoneOffset() * 60000;
@@ -77,14 +84,16 @@ export default function AdminSettingsPage() {
     setIsSaving(true);
     
     try {
-      const utcDate = new Date(deadline).toISOString();
+      const utcDeadline = new Date(deadline).toISOString();
+      const utcStartTime = startTime ? new Date(startTime).toISOString() : null;
 
       // 1. Save global settings
       const { error: settingsError } = await supabase
         .from("site_settings")
         .upsert({ 
           id: 1, 
-          deadline: utcDate,
+          start_time: utcStartTime,
+          deadline: utcDeadline,
           phase,
           display_results: displayResults
         });
@@ -132,10 +141,21 @@ export default function AdminSettingsPage() {
           <div className="bg-black/40 border border-red-500/20 rounded-2xl p-6 relative overflow-hidden">
             <h2 className="text-lg font-bold font-syne mb-6 flex items-center gap-2 text-foreground border-b border-white/5 pb-3">
               <Clock size={20} className="text-red-500" />
-              Submission Deadline
+              Timeline Configuration
             </h2>
             
             <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                  Start Time (Registration to Submission)
+                </label>
+                <input 
+                  type="datetime-local"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-black/60 border border-red-500/20 text-foreground outline-none focus:border-red-500/50 transition-colors font-mono"
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Global Cutoff Time (Local Time)
@@ -149,7 +169,7 @@ export default function AdminSettingsPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed font-mono">
-                Note: Once this deadline passes, all submissions lock automatically across tasks.
+                Note: Before Start Time, students are in Registration Phase. After Cutoff, all submissions lock automatically across tasks.
               </p>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { LogOut, Home, BarChart2, BookOpen, Menu, X, Rocket, Settings, ShieldAlert, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { getEffectivePhase } from "@/lib/phase";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -19,21 +20,33 @@ const navItems = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [currentPhase, setCurrentPhase] = useState("submission");
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
 
   React.useEffect(() => {
-    async function checkRole() {
+    async function checkRoleAndPhase() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single();
       if (data?.role === 'admin' || data?.role === 'evaluator') {
         setUserRole(data.role);
       }
+      
+      const { data: settingsData } = await supabase.from('site_settings').select('*').eq('id', 1).single();
+      const effectivePhase = getEffectivePhase(settingsData);
+      setCurrentPhase(effectivePhase);
+      
+      if (effectivePhase === "registration") {
+        if (pathname.includes("/task-") || pathname.includes("/results") || pathname.includes("/compare")) {
+          toast.error("This section is locked during the Registration Phase.");
+          router.push("/dashboard");
+        }
+      }
     }
-    checkRole();
-  }, [supabase]);
+    checkRoleAndPhase();
+  }, [supabase, pathname, router]);
 
   const handleLogout = async () => {
     try {
@@ -80,7 +93,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <nav className="flex-1 px-4 py-8 md:py-4 space-y-2 overflow-y-auto">
-          {navItems.map((item) => {
+          {navItems.filter(item => {
+            if (currentPhase === "registration" && (item.label === "Results" || item.label === "Compare")) {
+              return false;
+            }
+            return true;
+          }).map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link

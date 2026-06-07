@@ -14,6 +14,7 @@ interface TimeLeft {
 export default function CountdownTimer() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [targetDate, setTargetDate] = useState<Date | null>(null);
+  const [timerLabel, setTimerLabel] = useState("Time Remaining");
   const [isUrgent, setIsUrgent] = useState(false);
   const supabase = createClient();
 
@@ -22,11 +23,17 @@ export default function CountdownTimer() {
   useEffect(() => {
     setIsMounted(true);
     async function loadDeadline() {
-      const { data } = await supabase.from("site_settings").select("deadline").eq("id", 1).single();
-      if (data?.deadline) {
+      const { data } = await supabase.from("site_settings").select("start_time, deadline").eq("id", 1).single();
+      const now = new Date();
+      if (data?.start_time && now < new Date(data.start_time)) {
+        setTargetDate(new Date(data.start_time));
+        setTimerLabel("Time Until Start");
+      } else if (data?.deadline) {
         setTargetDate(new Date(data.deadline));
+        setTimerLabel("Time Remaining");
       } else {
         setTargetDate(new Date("2026-06-07T23:59:59Z")); // Fallback
+        setTimerLabel("Time Remaining");
       }
     }
     loadDeadline();
@@ -78,7 +85,7 @@ export default function CountdownTimer() {
       <div className="flex items-center gap-2 mb-2 text-sm font-mono uppercase tracking-widest text-muted-foreground">
         <Clock size={16} className={isUrgent ? "text-[var(--color-star-danger)]" : "text-[var(--color-star-accent)]"} />
         <span className={isUrgent ? "text-[var(--color-star-danger)] font-bold" : ""}>
-          Time Remaining
+          {timerLabel}
         </span>
       </div>
       

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FileText, Download, Upload, Bell } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { getEffectivePhase } from "@/lib/phase";
 
 interface TaskSubNavProps {
   taskNumber: number;
@@ -22,8 +23,8 @@ export default function TaskSubNav({ taskNumber }: TaskSubNavProps) {
   useEffect(() => {
     async function loadNavStatus() {
       // 1. Fetch site settings (phase)
-      const { data: settings } = await supabase.from("site_settings").select("phase").eq("id", 1).single();
-      if (settings?.phase) setPhase(settings.phase);
+      const { data: settings } = await supabase.from("site_settings").select("*").eq("id", 1).single();
+      if (settings) setPhase(getEffectivePhase(settings));
 
       // 2. Fetch specific task is_open
       const { data: task } = await supabase.from("tasks").select("is_open").eq("task_number", taskNumber).single();

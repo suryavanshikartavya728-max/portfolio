@@ -6,6 +6,7 @@ import { ArrowRight, Code, Database, BrainCircuit, CheckCircle2, Clock, CircleDa
 import { createClient } from "@/lib/supabase/client";
 import CountdownTimer from "@/components/star/CountdownTimer";
 import { motion } from "framer-motion";
+import { getEffectivePhase } from "@/lib/phase";
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<any>(null);
@@ -138,6 +139,9 @@ export default function DashboardPage() {
     return acc + (sc.status === "reviewed" ? sc.total : 0);
   }, 0);
 
+  const effectivePhase = getEffectivePhase(settings);
+  const isTaskLocked = profile?.is_disqualified || effectivePhase === "registration";
+
   return (
     <div className="space-y-10 max-w-6xl mx-auto">
       
@@ -177,9 +181,9 @@ export default function DashboardPage() {
         
         {!profile?.is_disqualified && (
           <div className="bg-background/50 p-4 md:p-6 rounded-xl border border-[var(--color-star-border)] w-full md:w-auto min-w-[250px] flex items-center justify-center">
-            {settings?.phase === "submission" && <CountdownTimer />}
+            {(effectivePhase === "registration" || effectivePhase === "submission") && <CountdownTimer />}
             
-            {settings?.phase === "evaluation" && (
+            {effectivePhase === "evaluation" && (
               <div className="flex flex-col items-center justify-center text-center">
                 <BrainCircuit className="text-[var(--color-star-accent)] mb-3 animate-pulse" size={32} />
                 <h3 className="font-bold font-syne text-lg">Evaluation in Progress</h3>
@@ -187,7 +191,7 @@ export default function DashboardPage() {
               </div>
             )}
             
-            {settings?.phase === "announcement" && (
+            {effectivePhase === "announcement" && (
               <div className="flex flex-col items-center justify-center text-center">
                 {ownOverallScore >= (settings?.total_threshold || 0) ? (
                   <>
@@ -225,7 +229,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4">
           
           {/* TASK 1 */}
-          <Link href={profile?.is_disqualified ? "#" : "/dashboard/task-1"} className={`group block h-full ${profile?.is_disqualified ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
+          <Link href={isTaskLocked ? "#" : "/dashboard/task-1"} className={`group block h-full ${isTaskLocked ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
             <div className="h-full bg-[var(--color-star-surface)] border border-[var(--color-star-border)] rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-[var(--color-star-task1)]/50 hover:bg-[var(--color-star-surface2)] flex flex-col">
               <div className="flex justify-between items-start mb-6">
                 <div className="w-12 h-12 rounded-xl bg-[var(--color-star-task1)]/10 flex items-center justify-center">
@@ -243,14 +247,14 @@ export default function DashboardPage() {
                   Build a full-stack Inventory Management System for STAC. Handle authentication, role-based access, and equipment borrowing workflows.
                 </p>
                 <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-star-task1)]">
-                  {profile?.is_disqualified ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  {isTaskLocked ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
           </Link>
 
           {/* TASK 2 */}
-          <Link href={profile?.is_disqualified ? "#" : "/dashboard/task-2"} className={`group block h-full ${profile?.is_disqualified ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
+          <Link href={isTaskLocked ? "#" : "/dashboard/task-2"} className={`group block h-full ${isTaskLocked ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
             <div className="h-full bg-[var(--color-star-surface)] border border-[var(--color-star-border)] rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-[var(--color-star-task2)]/50 hover:bg-[var(--color-star-surface2)] flex flex-col">
               <div className="flex justify-between items-start mb-6">
                 <div className="w-12 h-12 rounded-xl bg-[var(--color-star-task2)]/10 flex items-center justify-center">
@@ -268,14 +272,14 @@ export default function DashboardPage() {
                   Based on STAC's Inter IIT Tech Meet problem. Build an interactive dashboard to visualize and analyze lunar X-ray fluorescence spectroscopy datasets.
                 </p>
                 <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-star-task2)]">
-                  {profile?.is_disqualified ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  {isTaskLocked ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
           </Link>
 
           {/* TASK 3 */}
-          <Link href={profile?.is_disqualified ? "#" : "/dashboard/task-3"} className={`group block h-full ${profile?.is_disqualified ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
+          <Link href={isTaskLocked ? "#" : "/dashboard/task-3"} className={`group block h-full ${isTaskLocked ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
             <div className="h-full bg-[var(--color-star-surface)] border border-[var(--color-star-border)] rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-[var(--color-star-task3)]/50 hover:bg-[var(--color-star-surface2)] flex flex-col">
               <div className="flex justify-between items-start mb-6">
                 <div className="w-12 h-12 rounded-xl bg-[var(--color-star-task3)]/10 flex items-center justify-center">
@@ -293,14 +297,14 @@ export default function DashboardPage() {
                   Utilize the <code>lunadem</code> simulation library to classify lunar terrain. Open-ended problem requiring ML pipelines and rigorous metric tracking.
                 </p>
                 <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-star-task3)]">
-                  {profile?.is_disqualified ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  {isTaskLocked ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
           </Link>
 
           {/* TASK 4 */}
-          <Link href={profile?.is_disqualified ? "#" : "/dashboard/task-4"} className={`group block h-full ${profile?.is_disqualified ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
+          <Link href={isTaskLocked ? "#" : "/dashboard/task-4"} className={`group block h-full ${isTaskLocked ? "cursor-not-allowed pointer-events-none opacity-50" : ""}`}>
             <div className="h-full bg-[var(--color-star-surface)] border border-[var(--color-star-border)] rounded-2xl p-6 transition-all duration-300 hover:shadow-2xl hover:border-orange-500/50 hover:bg-[var(--color-star-surface2)] flex flex-col">
               <div className="flex justify-between items-start mb-6">
                 <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
@@ -318,7 +322,7 @@ export default function DashboardPage() {
                   Design the complete Electrical Subsystem and select the necessary avionics and sensors required for a high-altitude CanSat mission.
                 </p>
                 <div className="flex items-center gap-2 text-sm font-medium text-orange-500">
-                  {profile?.is_disqualified ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  {isTaskLocked ? "LOCKED" : "View PS"} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
