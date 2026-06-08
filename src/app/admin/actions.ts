@@ -32,3 +32,27 @@ export async function toggleUserDisqualification(userId: string, currentStatus: 
 
   return { success: true, newStatus: !currentStatus };
 }
+
+export async function toggleUserClubMember(userId: string, currentStatus: boolean) {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  const { error } = await supabaseAdmin
+    .from("profiles")
+    .update({ is_club_member: !currentStatus })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Club member error:", error);
+    throw new Error(error.message);
+  }
+
+  // Revalidate relevant paths
+  revalidatePath("/admin/users");
+  revalidatePath("/admin/leaderboard");
+  revalidatePath("/dashboard/results");
+  revalidatePath("/dashboard/task-3/leaderboard");
+
+  return { success: true, newStatus: !currentStatus };
+}

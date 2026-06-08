@@ -162,6 +162,23 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
+      {/* 2. Club Member Banner */}
+      {profile?.is_club_member && (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4 text-blue-400"
+        >
+          <Award size={36} className="shrink-0 text-blue-500 animate-pulse" />
+          <div>
+            <h3 className="font-bold text-lg font-syne uppercase tracking-wider">Club Member Status</h3>
+            <p className="text-sm font-mono leading-relaxed mt-1">
+              You have been marked as a Club Member. You are not competing for a rank against regular applicants, but your scores will still be evaluated and you are eligible for best performer spots.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Header section with Countdown */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bg-[var(--color-star-surface)] border border-[var(--color-star-border)] p-6 md:p-8 rounded-2xl shadow-xl">
         <div>

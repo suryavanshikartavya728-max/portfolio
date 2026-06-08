@@ -18,6 +18,7 @@ export default function Task3Leaderboard() {
           full_name,
           roll_number,
           is_disqualified,
+          is_club_member,
           leaderboard!inner(overall_score, rank, is_overridden),
           submissions!inner(accuracy, f1_score, precision_score, recall, roc_auc)
         `)
@@ -101,25 +102,30 @@ export default function Task3Leaderboard() {
                   return leaderboard.map((entry, index) => {
                   const lb = entry.leaderboard[0] || {};
                   const isDisq = !!entry.is_disqualified;
+                  const isClub = !!entry.is_club_member;
                   const profile = entry;
                   const subs = entry.submissions[0] || {};
                   
                   let rankDisplay = "DISQ";
                   let rankValue = 0;
                   if (!isDisq) {
-                    rankValue = lb.is_overridden ? lb.rank : currentRank;
-                    rankDisplay = `#${rankValue}`;
-                    if (!lb.is_overridden) currentRank++;
+                    if (isClub) {
+                      rankDisplay = "CLUB MEMBER";
+                    } else {
+                      rankValue = lb.is_overridden ? lb.rank : currentRank;
+                      rankDisplay = `#${rankValue}`;
+                      if (!lb.is_overridden) currentRank++;
+                    }
                   }
 
                   return (
-                    <tr key={profile.roll_number} className={`border-b border-[var(--color-star-border)]/50 hover:bg-[var(--color-star-surface2)] transition-colors group ${isDisq ? "bg-red-500/5 text-red-500/90" : ""}`}>
+                    <tr key={profile.roll_number} className={`border-b border-[var(--color-star-border)]/50 hover:bg-[var(--color-star-surface2)] transition-colors group ${isDisq ? "bg-red-500/5 text-red-500/90" : isClub ? "bg-blue-500/5 text-blue-400" : ""}`}>
                       <td className="py-4 pl-4">
                         <div className="flex items-center gap-2">
-                          {!isDisq && rankValue === 1 && <Trophy size={18} className="text-yellow-400" />}
-                          {!isDisq && rankValue === 2 && <Medal size={18} className="text-gray-300" />}
-                          {!isDisq && rankValue === 3 && <Award size={18} className="text-amber-600" />}
-                          <span className={`font-mono font-bold ${isDisq ? "text-red-500" : rankValue <= 3 ? "text-lg" : "text-muted-foreground"}`}>
+                          {!isDisq && !isClub && rankValue === 1 && <Trophy size={18} className="text-yellow-400" />}
+                          {!isDisq && !isClub && rankValue === 2 && <Medal size={18} className="text-gray-300" />}
+                          {!isDisq && !isClub && rankValue === 3 && <Award size={18} className="text-amber-600" />}
+                          <span className={`font-mono font-bold ${isDisq ? "text-red-500" : isClub ? "text-blue-500 text-xs" : rankValue <= 3 ? "text-lg" : "text-muted-foreground"}`}>
                             {rankDisplay}
                           </span>
                         </div>
@@ -130,6 +136,11 @@ export default function Task3Leaderboard() {
                           {isDisq && (
                             <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-red-500/20 text-red-500 border border-red-500/30 uppercase tracking-widest font-mono">
                               Disqualified
+                            </span>
+                          )}
+                          {isClub && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/20 text-blue-500 border border-blue-500/30 uppercase tracking-widest font-mono">
+                              Club Member
                             </span>
                           )}
                         </div>

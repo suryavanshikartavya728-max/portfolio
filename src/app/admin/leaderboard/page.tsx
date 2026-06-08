@@ -54,6 +54,7 @@ export default function AdminLeaderboardPage() {
         full_name,
         roll_number,
         is_disqualified,
+        is_club_member,
         submissions (
           task_number,
           is_reviewed,
@@ -94,6 +95,7 @@ export default function AdminLeaderboardPage() {
           full_name: profile.full_name,
           roll_number: profile.roll_number,
           is_disqualified: !!profile.is_disqualified,
+          is_club_member: !!profile.is_club_member,
           t1,
           t2,
           t3,
@@ -150,6 +152,7 @@ export default function AdminLeaderboardPage() {
 
   const getHighlightClass = (row: any) => {
     if (row.is_disqualified) return "border-red-500/30 bg-red-950/10 text-red-500/90";
+    if (row.is_club_member) return "border-blue-500/40 bg-blue-500/10 text-blue-400";
 
     const t1Limit = parseFloat(t1Thresh) || 0;
     const t2Limit = parseFloat(t2Thresh) || 0;
@@ -326,13 +329,18 @@ export default function AdminLeaderboardPage() {
                     const isGold = highlightClass.includes("yellow-500");
                     const isGreen = highlightClass.includes("green-500");
                     const isDisq = row.is_disqualified;
+                    const isClub = row.is_club_member;
 
                     let rankDisplay = "DISQ";
                     let rankValue = 0;
                     if (!isDisq) {
-                      rankValue = currentRank;
-                      rankDisplay = `#${rankValue}`;
-                      currentRank++;
+                      if (isClub) {
+                        rankDisplay = "CLUB MEMBER";
+                      } else {
+                        rankValue = currentRank;
+                        rankDisplay = `#${rankValue}`;
+                        currentRank++;
+                      }
                     }
 
                     return (
@@ -342,10 +350,10 @@ export default function AdminLeaderboardPage() {
                       >
                         <td className="p-4">
                           <div className="flex items-center gap-2">
-                            {!isDisq && rankValue === 1 && <Trophy size={18} className="text-yellow-400" />}
-                            {!isDisq && rankValue === 2 && <Medal size={18} className="text-gray-300" />}
-                            {!isDisq && rankValue === 3 && <Award size={18} className="text-amber-600" />}
-                            <span className="font-mono font-bold">{rankDisplay}</span>
+                            {!isDisq && !isClub && rankValue === 1 && <Trophy size={18} className="text-yellow-400" />}
+                            {!isDisq && !isClub && rankValue === 2 && <Medal size={18} className="text-gray-300" />}
+                            {!isDisq && !isClub && rankValue === 3 && <Award size={18} className="text-amber-600" />}
+                            <span className="font-mono font-bold text-xs">{rankDisplay}</span>
                           </div>
                         </td>
                       <td className="p-4">
@@ -354,6 +362,11 @@ export default function AdminLeaderboardPage() {
                           {isDisq && (
                             <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-red-500/20 text-red-500 border border-red-500/30 uppercase tracking-widest font-mono">
                               Disqualified
+                            </span>
+                          )}
+                          {isClub && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/20 text-blue-500 border border-blue-500/30 uppercase tracking-widest font-mono">
+                              Club Member
                             </span>
                           )}
                         </div>

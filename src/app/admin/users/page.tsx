@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Users, Search, Loader2, Undo2, Check, RefreshCw, ChevronDown, ChevronUp, Code, Globe, FileText, Activity, AlertTriangle, ShieldAlert, Award, X, Save } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { toggleUserDisqualification } from "../actions";
+import { toggleUserDisqualification, toggleUserClubMember } from "../actions";
 
 export default function UserSubmissionsPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -28,6 +28,7 @@ export default function UserSubmissionsPage() {
   const [score1, setScore1] = useState("0");
   const [score2, setScore2] = useState("0");
   const [score3, setScore3] = useState("0");
+  const [remarks, setRemarks] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
   const [showEvalModal, setShowEvalModal] = useState(false);
   const [isSavingEval, setIsSavingEval] = useState(false);
@@ -45,6 +46,7 @@ export default function UserSubmissionsPage() {
         full_name,
         roll_number,
         is_disqualified,
+        is_club_member,
         task_statuses ( task_number, status ),
         submissions ( 
           *,
@@ -123,6 +125,7 @@ export default function UserSubmissionsPage() {
     setScore1(existingEval?.score_1?.toString() || "0");
     setScore2(existingEval?.score_2?.toString() || "0");
     setScore3(existingEval?.score_3?.toString() || "0");
+    setRemarks(existingEval?.remarks || "");
     setIsInvalid(!!existingEval?.is_invalid);
     setShowEvalModal(true);
   };
@@ -147,6 +150,7 @@ export default function UserSubmissionsPage() {
         score_1: s1,
         score_2: s2,
         score_3: s3,
+        remarks: remarks,
         is_invalid: isInvalid,
         evaluated_at: new Date().toISOString()
       };
@@ -200,6 +204,29 @@ export default function UserSubmissionsPage() {
       loadData();
     } catch (err: any) {
       toast.error(err.message || "Failed to update disqualification status");
+    }
+  };
+
+  const handleToggleClubMember = async (e: React.MouseEvent, user: any) => {
+    e.stopPropagation();
+    if (currentUserRole !== "admin") {
+      toast.error("Only admins possess club member permissions.");
+      return;
+    }
+
+    const confirmMsg = user.is_club_member
+      ? `Are you sure you want to remove ${user.full_name} from Club Members?`
+      : `Are you sure you want to mark ${user.full_name} as a Club Member?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      await toggleUserClubMember(user.id, user.is_club_member);
+
+      toast.success(user.is_club_member ? "Removed from Club Members successfully!" : "Applicant marked as Club Member successfully!");
+      loadData();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update club member status");
     }
   };
 
@@ -351,21 +378,38 @@ export default function UserSubmissionsPage() {
                                   Disqualified
                                 </span>
                               )}
+                              {user.is_club_member && (
+                                <span className="px-2 py-0.5 text-[9px] font-bold rounded bg-blue-500/20 text-blue-500 border border-blue-500/30 uppercase tracking-widest font-mono">
+                                  Club Member
+                                </span>
+                              )}
                             </div>
                             <div className="text-xs text-muted-foreground font-mono">{user.roll_number}</div>
                           </td>
                           <td className="p-4 text-center">
                             {currentUserRole === "admin" ? (
-                              <button
-                                onClick={(e) => handleToggleDisqualify(e, user)}
-                                className={`px-3 py-1.5 text-xs font-bold font-mono rounded-lg transition-all border ${
-                                  user.is_disqualified
-                                    ? "bg-green-500/15 border-green-500/30 text-green-400 hover:bg-green-500/25"
-                                    : "bg-red-500/15 border-red-500/30 text-red-400 hover:bg-red-500/25"
-                                }`}
-                              >
-                                {user.is_disqualified ? "UNDO DISQUALIFICATION" : "DISQUALIFY"}
-                              </button>
+                              <div className="flex flex-col gap-2 items-center">
+                                <button
+                                  onClick={(e) => handleToggleDisqualify(e, user)}
+                                  className={`w-full px-3 py-1.5 text-xs font-bold font-mono rounded-lg transition-all border ${
+                                    user.is_disqualified
+                                      ? "bg-green-500/15 border-green-500/30 text-green-400 hover:bg-green-500/25"
+                                      : "bg-red-500/15 border-red-500/30 text-red-400 hover:bg-red-500/25"
+                                  }`}
+                                >
+                                  {user.is_disqualified ? "UNDO DISQUALIFICATION" : "DISQUALIFY"}
+                                </button>
+                                <button
+                                  onClick={(e) => handleToggleClubMember(e, user)}
+                                  className={`w-full px-3 py-1.5 text-xs font-bold font-mono rounded-lg transition-all border ${
+                                    user.is_club_member
+                                      ? "bg-gray-500/15 border-gray-500/30 text-gray-400 hover:bg-gray-500/25"
+                                      : "bg-blue-500/15 border-blue-500/30 text-blue-400 hover:bg-blue-500/25"
+                                  }`}
+                                >
+                                  {user.is_club_member ? "REMOVE CLUB MEMBER" : "MAKE CLUB MEMBER"}
+                                </button>
+                              </div>
                             ) : (
                               <span className="text-xs font-mono text-muted-foreground">
                                 {user.is_disqualified ? "Locked out" : "Active"}
@@ -629,6 +673,19 @@ export default function UserSubmissionsPage() {
                       value={score3}
                       onChange={(e) => setScore3(e.target.value)}
                       className="w-full px-4 py-3 rounded-lg bg-black border border-white/10 text-foreground outline-none focus:border-red-500/50 transition-colors font-mono disabled:opacity-30"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2 font-mono uppercase text-xs tracking-wider">
+                      Remarks (Optional)
+                    </label>
+                    <textarea
+                      disabled={isInvalid}
+                      value={remarks}
+                      onChange={(e) => setRemarks(e.target.value)}
+                      placeholder="Add an evaluation message..."
+                      className="w-full px-4 py-3 rounded-lg bg-black border border-white/10 text-foreground outline-none focus:border-red-500/50 transition-colors font-mono disabled:opacity-30 min-h-[80px]"
                     />
                   </div>
 

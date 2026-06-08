@@ -46,6 +46,7 @@ export default function ResultsPage() {
             full_name,
             roll_number,
             is_disqualified,
+            is_club_member,
             submissions (
               task_number,
               is_reviewed,
@@ -72,6 +73,7 @@ export default function ResultsPage() {
               full_name: p.full_name,
               roll_number: p.roll_number,
               is_disqualified: !!p.is_disqualified,
+              is_club_member: !!p.is_club_member,
               t1, t2, t3, t4,
               overall: t1 + t2 + t3 + t4
             };
@@ -83,12 +85,12 @@ export default function ResultsPage() {
           
           setLeaderboard(sorted);
 
-          // Find own rank skipping disqualified users
-          if (!profileData.is_disqualified) {
+          // Find own rank skipping disqualified users and club members
+          if (!profileData.is_disqualified && !profileData.is_club_member) {
             let ownRank = 0;
             let currentRank = 1;
             for (const p of sorted) {
-              if (!p.is_disqualified) {
+              if (!p.is_disqualified && !p.is_club_member) {
                 if (p.id === user.id) {
                   ownRank = currentRank;
                   break;
@@ -112,7 +114,7 @@ export default function ResultsPage() {
     if (!sub) return { status: "not_submitted", total: 0 };
     if (!sub.is_reviewed) return { status: "pending", total: 0 };
     if (ev?.is_invalid) return { status: "invalid", total: 0 };
-    return { status: "reviewed", total: parseFloat(ev?.total_score) || 0, score_1: ev?.score_1, score_2: ev?.score_2, score_3: ev?.score_3 };
+    return { status: "reviewed", total: parseFloat(ev?.total_score) || 0, score_1: ev?.score_1, score_2: ev?.score_2, score_3: ev?.score_3, remarks: ev?.remarks };
   };
 
   const getOwnParamTitles = (taskNum: number) => {
@@ -126,6 +128,7 @@ export default function ResultsPage() {
 
   const getHighlightClass = (row: any) => {
     if (row.is_disqualified) return "border-red-500/30 bg-red-950/10 text-red-500/90";
+    if (row.is_club_member) return "border-blue-500/40 bg-blue-500/10 text-blue-400";
 
     const t1Limit = settings?.task_1_threshold || 0;
     const t2Limit = settings?.task_2_threshold || 0;
@@ -245,7 +248,7 @@ export default function ResultsPage() {
               <div className="text-center">
                 <div className="text-[10px] text-muted-foreground font-mono uppercase mb-1">Global Rank</div>
                 <div className="text-3xl font-bold font-mono text-yellow-500">
-                  {rank ? `#${rank}` : "N/A"}
+                  {profile?.is_club_member ? <span className="text-xl text-blue-500">CLUB MEMBER</span> : (rank ? `#${rank}` : "N/A")}
                 </div>
               </div>
               <div className="w-px h-12 bg-white/10 hidden md:block"></div>
@@ -327,6 +330,12 @@ export default function ResultsPage() {
                           <span className="text-red-500 font-bold">NO</span>
                         )}
                       </div>
+                      {sc.remarks && (
+                        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded text-xs text-blue-200/90 italic">
+                          <span className="font-bold text-blue-400 not-italic block mb-1">Evaluator Remarks:</span>
+                          {sc.remarks}
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
@@ -397,14 +406,19 @@ export default function ResultsPage() {
             <tbody>
               {(() => {
                 let currentRank = 1;
-                return leaderboard.map((row, index) => {
+                  return leaderboard.map((row, index) => {
                   const highlightClass = getHighlightClass(row);
                   const isDisq = row.is_disqualified;
+                  const isClub = row.is_club_member;
                   
                   let rankDisplay = "DISQ";
                   if (!isDisq) {
-                    rankDisplay = `#${currentRank}`;
-                    currentRank++;
+                    if (isClub) {
+                      rankDisplay = "CLUB MEMBER";
+                    } else {
+                      rankDisplay = `#${currentRank}`;
+                      currentRank++;
+                    }
                   }
 
                   const isMe = row.id === profile?.id;
@@ -414,13 +428,18 @@ export default function ResultsPage() {
                     key={row.roll_number}
                     className={`border-b border-red-500/10 transition-all duration-300 text-sm ${highlightClass} ${isMe ? 'bg-white/5 border-l-2 border-l-[var(--color-star-accent)]' : ''}`}
                   >
-                    <td className="p-3 font-mono font-bold">{rankDisplay} {isMe && <span className="text-[9px] ml-2 bg-[var(--color-star-accent)]/20 text-[var(--color-star-accent)] px-1 rounded uppercase">You</span>}</td>
+                    <td className="p-3 font-mono font-bold text-xs">{rankDisplay} {isMe && <span className="text-[9px] ml-2 bg-[var(--color-star-accent)]/20 text-[var(--color-star-accent)] px-1 rounded uppercase">You</span>}</td>
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <div className="font-bold font-syne">{row.full_name}</div>
                         {isDisq && (
                           <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-red-500/20 text-red-500 border border-red-500/30 uppercase tracking-widest font-mono">
                             Disqualified
+                          </span>
+                        )}
+                        {isClub && (
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-blue-500/20 text-blue-500 border border-blue-500/30 uppercase tracking-widest font-mono">
+                            Club Member
                           </span>
                         )}
                       </div>

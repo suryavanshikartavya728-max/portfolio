@@ -29,18 +29,11 @@ export default function Task3ResourcesPage() {
                   The Python library required for simulating lunar surface metrics.
                 </p>
                 <div className="bg-black/50 p-4 rounded-lg font-mono text-sm border border-[var(--color-star-border)] mb-4">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <span className="text-[var(--color-star-accent)]">$</span> 
-                    <code>pip install lunadem-1.0.0-py3-none-any.whl</code>
+                    <code>pip install lunadem</code>
                   </div>
                 </div>
-                <a 
-                  href="/data/lunadem-1.0.0-py3-none-any.whl" 
-                  download
-                  className="inline-flex items-center gap-2 bg-[var(--color-star-task3)]/10 text-[var(--color-star-task3)] hover:bg-[var(--color-star-task3)] hover:text-background font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
-                >
-                  <Download size={16} /> Download lunadem library
-                </a>
               </div>
             </div>
           </div>
