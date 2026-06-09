@@ -199,16 +199,16 @@ export default function Task3Leaderboard() {
                         <div className="text-xs text-muted-foreground font-mono">{profile.roll_number}</div>
                       </td>
                       <td className="py-4 text-right font-mono text-sm">
-                        {subs?.accuracy?.toFixed(4) || "0.0000"}
+                        {subs?.accuracy?.toFixed(7) || "0.0000000"}
                       </td>
                       <td className="py-4 text-right font-mono text-sm hidden sm:table-cell text-muted-foreground group-hover:text-foreground transition-colors">
-                        {subs?.f1_score?.toFixed(4) || "0.0000"}
+                        {subs?.f1_score?.toFixed(7) || "0.0000000"}
                       </td>
                       <td className="py-4 text-right font-mono text-sm hidden md:table-cell text-muted-foreground group-hover:text-foreground transition-colors">
-                        {subs?.roc_auc?.toFixed(4) || "0.0000"}
+                        {subs?.roc_auc?.toFixed(7) || "0.0000000"}
                       </td>
                       <td className="py-4 pr-4 text-right font-mono font-bold text-[var(--color-star-task3)]">
-                        {profile.calculatedScore?.toFixed(4) || "0.0000"}
+                        {profile.calculatedScore?.toFixed(7) || "0.0000000"}
                       </td>
                     </tr>
                   );

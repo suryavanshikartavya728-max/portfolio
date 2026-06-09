@@ -133,23 +133,23 @@ export default function Task3Submission() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Accuracy *</label>
-                <input type="number" step="0.001" min="0" max="1" required value={accuracy} onChange={(e)=>setAccuracy(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
+                <input type="number" step="0.0000001" min="0" max="1" required value={accuracy} onChange={(e)=>setAccuracy(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">F1 Score *</label>
-                <input type="number" step="0.001" min="0" max="1" required value={f1} onChange={(e)=>setF1(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
+                <input type="number" step="0.0000001" min="0" max="1" required value={f1} onChange={(e)=>setF1(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Precision *</label>
-                <input type="number" step="0.001" min="0" max="1" required value={precision} onChange={(e)=>setPrecision(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
+                <input type="number" step="0.0000001" min="0" max="1" required value={precision} onChange={(e)=>setPrecision(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Recall *</label>
-                <input type="number" step="0.001" min="0" max="1" required value={recall} onChange={(e)=>setRecall(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
+                <input type="number" step="0.0000001" min="0" max="1" required value={recall} onChange={(e)=>setRecall(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">ROC-AUC *</label>
-                <input type="number" step="0.001" min="0" max="1" required value={rocAuc} onChange={(e)=>setRocAuc(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
+                <input type="number" step="0.0000001" min="0" max="1" required value={rocAuc} onChange={(e)=>setRocAuc(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
               </div>
             </div>
             
@@ -160,7 +160,7 @@ export default function Task3Submission() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-muted-foreground mb-1">Custom Metric Value (Optional)</label>
-                <input type="number" step="0.001" value={customMetricValue} onChange={(e)=>setCustomMetricValue(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
+                <input type="number" step="0.0000001" value={customMetricValue} onChange={(e)=>setCustomMetricValue(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-background border border-[var(--color-star-border)] focus:border-[var(--color-star-task3)] outline-none" />
               </div>
             </div>
           </div>
