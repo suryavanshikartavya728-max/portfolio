@@ -537,6 +537,42 @@ export default function UserSubmissionsPage() {
                                                   </div>
                                                 )}
 
+                                                {sub.task_number === 3 && (
+                                                  <div className="mb-6 p-4 bg-white/5 border border-white/10 rounded-xl space-y-3">
+                                                    <h5 className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground">Submitted ML Metrics:</h5>
+                                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-sm font-mono">
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">Accuracy</span>
+                                                        <div className="text-foreground">{sub.accuracy?.toFixed(7) || "N/A"}</div>
+                                                      </div>
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">F1 Score</span>
+                                                        <div className="text-foreground">{sub.f1_score?.toFixed(7) || "N/A"}</div>
+                                                      </div>
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">Precision</span>
+                                                        <div className="text-foreground">{sub.precision_score?.toFixed(7) || "N/A"}</div>
+                                                      </div>
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">Recall</span>
+                                                        <div className="text-foreground">{sub.recall?.toFixed(7) || "N/A"}</div>
+                                                      </div>
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">ROC-AUC</span>
+                                                        <div className="text-foreground">{sub.roc_auc?.toFixed(7) || "N/A"}</div>
+                                                      </div>
+                                                      {sub.custom_metric_name && (
+                                                        <div className="col-span-2 sm:col-span-1">
+                                                          <span className="text-muted-foreground block text-[10px] uppercase mb-1 truncate" title={sub.custom_metric_name}>
+                                                            {sub.custom_metric_name}
+                                                          </span>
+                                                          <div className="text-foreground">{sub.custom_metric_value?.toFixed(7) || "N/A"}</div>
+                                                        </div>
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                )}
+
                                                 {/* Display Evaluated Metrics if present */}
                                                 {evaluation && (
                                                   <div className="mb-6 p-4 bg-red-500/5 rounded-xl border border-red-500/10 space-y-3">
