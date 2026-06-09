@@ -8,10 +8,32 @@ import { Trophy, Medal, Award, AlertCircle } from "lucide-react";
 export default function Task3Leaderboard() {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
     async function loadLeaderboard() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const { data: userSub } = await supabase
+        .from("submissions")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("task_number", 3)
+        .limit(1);
+
+      const userHasSubmitted = userSub && userSub.length > 0;
+      setHasSubmitted(userHasSubmitted);
+
+      if (!userHasSubmitted) {
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("profiles")
         .select(`
@@ -77,6 +99,36 @@ export default function Task3Leaderboard() {
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="h-16 bg-[var(--color-star-surface2)] rounded-xl" />
             ))}
+          </div>
+        ) : hasSubmitted === false ? (
+          <div className="space-y-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-[var(--color-star-border)] text-muted-foreground text-sm font-mono uppercase tracking-wider">
+                    <th className="pb-4 pl-4 font-medium">Rank</th>
+                    <th className="pb-4 font-medium">Applicant</th>
+                    <th className="pb-4 font-medium text-right">Accuracy</th>
+                    <th className="pb-4 font-medium text-right hidden sm:table-cell">F1 Score</th>
+                    <th className="pb-4 font-medium text-right hidden md:table-cell">ROC-AUC</th>
+                    <th className="pb-4 pr-4 font-bold text-right text-[var(--color-star-task3)]">Total Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                      No data to display.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="bg-blue-500/10 border border-white/50 rounded-xl p-4 flex gap-3 items-start">
+              <AlertCircle className="text-white shrink-0" size={32} />
+              <p className="text-white/90 text-sm pt-1">
+                <strong>Note:</strong> You must make at least one submission to access the leaderboard. Students who have not submitted their solution will not be able to view other participants' submissions or leaderboard scores.
+              </p>
+            </div>
           </div>
         ) : leaderboard.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
