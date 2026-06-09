@@ -514,6 +514,29 @@ export default function UserSubmissionsPage() {
                                                   )}
                                                 </div>
 
+                                                {sub.task_number === 1 && (
+                                                  <div className="mb-6 p-4 bg-white/5 border border-white/10 rounded-xl space-y-3">
+                                                    <h5 className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground">Submitted Credentials:</h5>
+                                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm font-mono">
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">Admin</span>
+                                                        <div className="text-foreground truncate" title={sub.admin_username}>U: {sub.admin_username || "N/A"}</div>
+                                                        <div className="text-foreground truncate" title={sub.admin_password}>P: {sub.admin_password || "N/A"}</div>
+                                                      </div>
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">Core Member</span>
+                                                        <div className="text-foreground truncate" title={sub.core_member_username}>U: {sub.core_member_username || "N/A"}</div>
+                                                        <div className="text-foreground truncate" title={sub.core_member_password}>P: {sub.core_member_password || "N/A"}</div>
+                                                      </div>
+                                                      <div>
+                                                        <span className="text-muted-foreground block text-[10px] uppercase mb-1">Volunteer</span>
+                                                        <div className="text-foreground truncate" title={sub.volunteer_username}>U: {sub.volunteer_username || "N/A"}</div>
+                                                        <div className="text-foreground truncate" title={sub.volunteer_password}>P: {sub.volunteer_password || "N/A"}</div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                )}
+
                                                 {/* Display Evaluated Metrics if present */}
                                                 {evaluation && (
                                                   <div className="mb-6 p-4 bg-red-500/5 rounded-xl border border-red-500/10 space-y-3">
